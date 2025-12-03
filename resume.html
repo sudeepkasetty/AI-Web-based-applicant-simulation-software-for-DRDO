@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Analytics - DRDO AI Simulation</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+</head>
+<body>
+    <!-- Background 3D elements -->
+    <div class="bg-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <div class="logo-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <div class="logo-text">
+                    <span class="logo-main">DRDO</span>
+                    <span class="logo-sub">Resume Analytics</span>
+                </div>
+            </div>
+            
+            <div class="auth-buttons">
+                <a href="index.html" class="btn btn-login">
+                    <i class="fas fa-arrow-left"></i> Back to Home
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-container">
+        <div class="page-header">
+            <h1 class="page-title">AI-Powered <span class="gradient-text">Resume Analytics</span></h1>
+            <p class="page-subtitle">Upload your resume for intelligent scoring, improvement suggestions, and performance analytics tailored for DRDO selection.</p>
+        </div>
+        
+        <div class="resume-container">
+            <!-- Upload Section -->
+            <div class="upload-section card animate__animated animate__fadeIn">
+                <h2><i class="fas fa-cloud-upload-alt"></i> Upload Your Resume</h2>
+                <p class="section-description">Supported formats: PDF, DOC, DOCX (Max size: 5MB)</p>
+                
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-icon">
+                        <i class="fas fa-file-upload"></i>
+                    </div>
+                    <h3>Drag & Drop Your Resume</h3>
+                    <p>or click to browse files</p>
+                    <input type="file" id="resumeFile" accept=".pdf,.doc,.docx" hidden>
+                    <button class="btn btn-primary" id="browseBtn">
+                        <i class="fas fa-folder-open"></i> Browse Files
+                    </button>
+                </div>
+                
+                <div class="upload-progress" id="uploadProgress">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <div class="progress-text" id="progressText">Uploading: 0%</div>
+                </div>
+                
+                <div class="uploaded-file" id="uploadedFile">
+                    <div class="file-info">
+                        <i class="fas fa-file-pdf"></i>
+                        <div>
+                            <h4 id="fileName">Resume.pdf</h4>
+                            <p id="fileSize">2.4 MB</p>
+                        </div>
+                    </div>
+                    <button class="btn btn-login" id="removeFile">
+                        <i class="fas fa-trash"></i> Remove
+                    </button>
+                </div>
+                
+                <button class="btn btn-primary btn-block" id="analyzeBtn" disabled>
+                    <i class="fas fa-robot"></i> Analyze Resume with AI
+                </button>
+            </div>
+            
+            <!-- Results Section -->
+            <div class="results-section">
+                <!-- Score Card -->
+                <div class="score-card card animate__animated animate__fadeInUp">
+                    <h2><i class="fas fa-chart-line"></i> AI Resume Score</h2>
+                    <div class="score-display">
+                        <div class="score-circle">
+                            <div class="circle-progress" id="scoreCircle">
+                                <svg width="200" height="200" viewBox="0 0 200 200">
+                                    <circle cx="100" cy="100" r="90" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="10"/>
+                                    <circle cx="100" cy="100" r="90" fill="none" stroke="url(#gradient)" stroke-width="10" 
+                                            stroke-linecap="round" stroke-dasharray="565.48" stroke-dashoffset="282.74" id="scoreProgress"/>
+                                    <defs>
+                                        <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                            <stop offset="0%" stop-color="#3e92cc"/>
+                                            <stop offset="100%" stop-color="#2a9d8f"/>
+                                        </linearGradient>
+                                    </defs>
+                                </svg>
+                                <div class="score-text">
+                                    <span class="score-value" id="scoreValue">0</span>
+                                    <span class="score-max">/100</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="score-description">
+                            <h3 id="scoreTitle">Upload Resume to Begin Analysis</h3>
+                            <p id="scoreDescription">Your resume will be evaluated based on DRDO selection criteria including technical skills, experience, formatting, and keyword optimization.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Improvement Suggestions -->
+                <div class="suggestions-card card animate__animated animate__fadeInUp">
+                    <h2><i class="fas fa-lightbulb"></i> AI Improvement Suggestions</h2>
+                    <div class="suggestions-list" id="suggestionsList">
+                        <div class="suggestion-item">
+                            <div class="suggestion-icon">
+                                <i class="fas fa-exclamation-circle"></i>
+                            </div>
+                            <div class="suggestion-content">
+                                <h4>Upload your resume to receive personalized improvement suggestions</h4>
+                                <p>The AI will analyze your resume and provide specific recommendations to enhance your chances for DRDO selection.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Analytics -->
+                <div class="analytics-card card animate__animated animate__fadeInUp">
+                    <h2><i class="fas fa-chart-bar"></i> Performance Analytics</h2>
+                    <div class="analytics-grid">
+                        <div class="analytics-item">
+                            <div class="analytics-value" id="keywordScore">0%</div>
+                            <div class="analytics-label">Keyword Match</div>
+                            <div class="analytics-bar">
+                                <div class="bar-fill" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="analytics-item">
+                            <div class="analytics-value" id="formatScore">0%</div>
+                            <div class="analytics-label">Formatting & Structure</div>
+                            <div class="analytics-bar">
+                                <div class="bar-fill" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="analytics-item">
+                            <div class="analytics-value" id="experienceScore">0%</div>
+                            <div class="analytics-label">Experience Relevance</div>
+                            <div class="analytics-bar">
+                                <div class="bar-fill" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="analytics-item">
+                            <div class="analytics-value" id="skillScore">0%</div>
+                            <div class="analytics-label">Technical Skills</div>
+                            <div class="analytics-bar">
+                                <div class="bar-fill" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Resume Tips Section -->
+        <div class="tips-section">
+            <h2 class="section-title">DRDO Resume Optimization Tips</h2>
+            <div class="tips-grid">
+                <div class="tip-card">
+                    <div class="tip-icon">
+                        <i class="fas fa-key"></i>
+                    </div>
+                    <h3>Keyword Optimization</h3>
+                    <p>Include DRDO-relevant keywords: defense research, R&D, aerospace, electronics, strategic technologies, innovation.</p>
+                </div>
+                
+                <div class="tip-card">
+                    <div class="tip-icon">
+                        <i class="fas fa-bullseye"></i>
+                    </div>
+                    <h3>Quantify Achievements</h3>
+                    <p>Use numbers to demonstrate impact: "Improved efficiency by 30%", "Managed team of 15 engineers", "Reduced costs by 25%".</p>
+                </div>
+                
+                <div class="tip-card">
+                    <div class="tip-icon">
+                        <i class="fas fa-project-diagram"></i>
+                    </div>
+                    <h3>Project Highlights</h3>
+                    <p>Detail defense or research projects with clear objectives, your role, technologies used, and outcomes achieved.</p>
+                </div>
+                
+                <div class="tip-card">
+                    <div class="tip-icon">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <h3>Technical Skills Section</h3>
+                    <p>List relevant technical skills: programming languages, tools, methodologies, domain-specific knowledge.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-logo">
+                <div class="logo-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <div class="logo-text">
+                    <span class="logo-main">DRDO</span>
+                    <span class="logo-sub">AI Simulation Platform</span>
+                </div>
+            </div>
+            
+            <div class="footer-links">
+                <div class="link-group">
+                    <h4>Platform</h4>
+                    <a href="index.html">Home</a>
+                    <a href="round1.html">Round 1</a>
+                    <a href="interview.html">Interview</a>
+                    <a href="question-bank.html">Question Bank</a>
+                </div>
+                
+                <div class="link-group">
+                    <h4>Support</h4>
+                    <a href="#">Help Center</a>
+                    <a href="#">Contact Us</a>
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2023 DRDO AI Applicant Simulation. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        // Resume-specific JavaScript
+        document.addEventListener('DOMContentLoaded', function() {
+            const uploadArea = document.getElementById('uploadArea');
+            const resumeFile = document.getElementById('resumeFile');
+            const browseBtn = document.getElementById('browseBtn');
+            const uploadProgress = document.getElementById('uploadProgress');
+            const progressFill = document.getElementById('progressFill');
+            const progressText = document.getElementById('progressText');
+            const uploadedFile = document.getElementById('uploadedFile');
+            const fileName = document.getElementById('fileName');
+            const fileSize = document.getElementById('fileSize');
+            const removeFile = document.getElementById('removeFile');
+            const analyzeBtn = document.getElementById('analyzeBtn');
+            const scoreValue = document.getElementById('scoreValue');
+            const scoreProgress = document.getElementById('scoreProgress');
+            const scoreTitle = document.getElementById('scoreTitle');
+            const scoreDescription = document.getElementById('scoreDescription');
+            const suggestionsList = document.getElementById('suggestionsList');
+            
+            // Upload area click handler
+            uploadArea.addEventListener('click', () => resumeFile.click());
+            browseBtn.addEventListener('click', () => resumeFile.click());
+            
+            // File selection handler
+            resumeFile.addEventListener('change', function(e) {
+                if (this.files.length > 0) {
+                    const file = this.files[0];
+                    const fileSizeMB = (file.size / (1024 * 1024)).toFixed(2);
+                    
+                    // Validate file size
+                    if (fileSizeMB > 5) {
+                        alert('File size exceeds 5MB limit. Please choose a smaller file.');
+                        return;
+                    }
+                    
+                    // Validate file type
+                    const validTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+                    if (!validTypes.includes(file.type)) {
+                        alert('Please upload a PDF or Word document.');
+                        return;
+                    }
+                    
+                    // Show upload progress
+                    uploadProgress.style.display = 'block';
+                    simulateUpload();
+                    
+                    // Update file info
+                    fileName.textContent = file.name;
+                    fileSize.textContent = `${fileSizeMB} MB`;
+                    
+                    // Enable analyze button
+                    analyzeBtn.disabled = false;
+                }
+            });
+            
+            // Remove file handler
+            removeFile.addEventListener('click', function() {
+                resumeFile.value = '';
+                uploadProgress.style.display = 'none';
+                uploadedFile.style.display = 'none';
+                analyzeBtn.disabled = true;
+                resetAnalysis();
+            });
+            
+            // Analyze button handler
+            analyzeBtn.addEventListener('click', function() {
+                // Show uploaded file
+                uploadedFile.style.display = 'flex';
+                
+                // Run AI analysis simulation
+                runAIAnalysis();
+            });
+            
+            // Simulate file upload
+            function simulateUpload() {
+                let progress = 0;
+                const interval = setInterval(() => {
+                    progress += 5;
+                    progressFill.style.width = `${progress}%`;
+                    progressText.textContent = `Uploading: ${progress}%`;
+                    
+                    if (progress >= 100) {
+                        clearInterval(interval);
+                        progressText.textContent = 'Upload Complete!';
+                        
+                        // Show uploaded file after a delay
+                        setTimeout(() => {
+                            uploadProgress.style.display = 'none';
+                        }, 1000);
+                    }
+                }, 100);
+            }
+            
+            // Simulate AI analysis
+            function runAIAnalysis() {
+                // Generate random scores for demonstration
+                const overallScore = Math.floor(Math.random() * 30) + 65; // 65-95
+                const keywordScore = Math.floor(Math.random() * 20) + 70;
+                const formatScore = Math.floor(Math.random() * 25) + 65;
+                const experienceScore = Math.floor(Math.random() * 30) + 60;
+                const skillScore = Math.floor(Math.random() * 25) + 70;
+                
+                // Animate score display
+                animateScore(overallScore);
+                
+                // Update analytics bars
+                setTimeout(() => {
+                    document.getElementById('keywordScore').textContent = `${keywordScore}%`;
+                    document.querySelector('#keywordScore + .analytics-label + .analytics-bar .bar-fill').style.width = `${keywordScore}%`;
+                    
+                    document.getElementById('formatScore').textContent = `${formatScore}%`;
+                    document.querySelector('#formatScore + .analytics-label + .analytics-bar .bar-fill').style.width = `${formatScore}%`;
+                    
+                    document.getElementById('experienceScore').textContent = `${experienceScore}%`;
+                    document.querySelector('#experienceScore + .analytics-label + .analytics-bar .bar-fill').style.width = `${experienceScore}%`;
+                    
+                    document.getElementById('skillScore').textContent = `${skillScore}%`;
+                    document.querySelector('#skillScore + .analytics-label + .analytics-bar .bar-fill').style.width = `${skillScore}%`;
+                }, 1500);
+                
+                // Update score description
+                let title, description;
+                if (overallScore >= 85) {
+                    title = 'Excellent Resume!';
+                    description = 'Your resume is well-optimized for DRDO selection. Strong technical skills, relevant experience, and good formatting.';
+                } else if (overallScore >= 75) {
+                    title = 'Good Resume';
+                    description = 'Your resume is good but can be improved further. Consider the suggestions below to increase your chances.';
+                } else if (overallScore >= 65) {
+                    title = 'Needs Improvement';
+                    description = 'Your resume needs significant improvements to be competitive for DRDO selection. Follow the suggestions below.';
+                } else {
+                    title = 'Requires Major Revision';
+                    description = 'Your resume needs substantial improvements. Carefully review and implement all suggestions below.';
+                }
+                
+                setTimeout(() => {
+                    scoreTitle.textContent = title;
+                    scoreDescription.textContent = description;
+                }, 1000);
+                
+                // Generate improvement suggestions
+                generateSuggestions(overallScore);
+            }
+            
+            // Animate score display
+            function animateScore(targetScore) {
+                let currentScore = 0;
+                const duration = 2000;
+                const increment = targetScore / (duration / 30);
+                
+                const timer = setInterval(() => {
+                    currentScore += increment;
+                    if (currentScore >= targetScore) {
+                        currentScore = targetScore;
+                        clearInterval(timer);
+                    }
+                    
+                    scoreValue.textContent = Math.floor(currentScore);
+                    
+                    // Update circle progress
+                    const circumference = 565.48;
+                    const offset = circumference - (currentScore / 100) * circumference;
+                    scoreProgress.style.strokeDashoffset = offset;
+                }, 30);
+            }
+            
+            // Generate AI suggestions
+            function generateSuggestions(score) {
+                suggestionsList.innerHTML = '';
+                
+                const suggestions = [
+                    {
+                        icon: 'fas fa-key',
+                        title: 'Add DRDO-specific Keywords',
+                        description: 'Include keywords like "defense research", "R&D", "aerospace engineering", "strategic technologies", and "innovation" to improve ATS screening.',
+                        priority: 'high'
+                    },
+                    {
+                        icon: 'fas fa-bullseye',
+                        title: 'Quantify Your Achievements',
+                        description: 'Add specific metrics to your accomplishments. Instead of "Managed projects", use "Managed 3 defense projects with $2M budget".',
+                        priority: score < 80 ? 'high' : 'medium'
+                    },
+                    {
+                        icon: 'fas fa-project-diagram',
+                        title: 'Highlight Relevant Projects',
+                        description: 'Create a dedicated projects section with 3-5 most relevant projects. Include technologies used and outcomes achieved.',
+                        priority: 'medium'
+                    },
+                    {
+                        icon: 'fas fa-graduation-cap',
+                        title: 'Expand Technical Skills Section',
+                        description: 'List specific technical skills in categories: Programming (Python, MATLAB), Tools (CAD, ANSYS), Methodologies (Agile, Six Sigma).',
+                        priority: 'medium'
+                    },
+                    {
+                        icon: 'fas fa-file-alt',
+                        title: 'Improve Formatting and Readability',
+                        description: 'Use consistent formatting, clear section headers, and sufficient white space. Ensure font size is 11-12pt for body text.',
+                        priority: score < 70 ? 'high' : 'low'
+                    }
+                ];
+                
+                // Filter suggestions based on score
+                const filteredSuggestions = suggestions.filter(s => {
+                    if (score >= 85) return s.priority === 'high';
+                    if (score >= 75) return s.priority !== 'low';
+                    return true;
+                });
+                
+                // Add suggestions to DOM
+                filteredSuggestions.forEach((suggestion, index) => {
+                    setTimeout(() => {
+                        const suggestionItem = document.createElement('div');
+                        suggestionItem.className = 'suggestion-item';
+                        suggestionItem.style.animation = `fadeIn 0.5s ease ${index * 0.2}s both`;
+                        
+                        suggestionItem.innerHTML = `
+                            <div class="suggestion-icon">
+                                <i class="${suggestion.icon}"></i>
+                            </div>
+                            <div class="suggestion-content">
+                                <h4>${suggestion.title}</h4>
+                                <p>${suggestion.description}</p>
+                                <span class="priority-tag priority-${suggestion.priority}">${suggestion.priority.toUpperCase()} PRIORITY</span>
+                            </div>
+                        `;
+                        
+                        suggestionsList.appendChild(suggestionItem);
+                    }, index * 300);
+                });
+                
+                // Add CSS for animations
+                const style = document.createElement('style');
+                style.textContent = `
+                    @keyframes fadeIn {
+                        from { opacity: 0; transform: translateY(20px); }
+                        to { opacity: 1; transform: translateY(0); }
+                    }
+                    .priority-tag {
+                        display: inline-block;
+                        padding: 0.2rem 0.8rem;
+                        border-radius: 20px;
+                        font-size: 0.8rem;
+                        font-weight: 600;
+                        margin-top: 0.5rem;
+                    }
+                    .priority-high {
+                        background-color: rgba(230, 57, 70, 0.2);
+                        color: #e63946;
+                    }
+                    .priority-medium {
+                        background-color: rgba(244, 162, 97, 0.2);
+                        color: #f4a261;
+                    }
+                    .priority-low {
+                        background-color: rgba(42, 157, 143, 0.2);
+                        color: #2a9d8f;
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+            
+            // Reset analysis display
+            function resetAnalysis() {
+                scoreValue.textContent = '0';
+                scoreProgress.style.strokeDashoffset = '565.48';
+                scoreTitle.textContent = 'Upload Resume to Begin Analysis';
+                scoreDescription.textContent = 'Your resume will be evaluated based on DRDO selection criteria including technical skills, experience, formatting, and keyword optimization.';
+                
+                // Reset analytics
+                document.getElementById('keywordScore').textContent = '0%';
+                document.querySelector('#keywordScore + .analytics-label + .analytics-bar .bar-fill').style.width = '0%';
+                
+                document.getElementById('formatScore').textContent = '0%';
+                document.querySelector('#formatScore + .analytics-label + .analytics-bar .bar-fill').style.width = '0%';
+                
+                document.getElementById('experienceScore').textContent = '0%';
+                document.querySelector('#experienceScore + .analytics-label + .analytics-bar .bar-fill').style.width = '0%';
+                
+                document.getElementById('skillScore').textContent = '0%';
+                document.querySelector('#skillScore + .analytics-label + .analytics-bar .bar-fill').style.width = '0%';
+                
+                // Reset suggestions
+                suggestionsList.innerHTML = `
+                    <div class="suggestion-item">
+                        <div class="suggestion-icon">
+                            <i class="fas fa-exclamation-circle"></i>
+                        </div>
+                        <div class="suggestion-content">
+                            <h4>Upload your resume to receive personalized improvement suggestions</h4>
+                            <p>The AI will analyze your resume and provide specific recommendations to enhance your chances for DRDO selection.</p>
+                        </div>
+                    </div>
+                `;
+            }
+        });
+    </script>
+    
+    <style>
+        /* Resume-specific styles */
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .page-title {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .page-subtitle {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto 2rem;
+        }
+        
+        .resume-container {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+        
+        @media (max-width: 1024px) {
+            .resume-container {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .upload-section {
+            padding: 2rem;
+        }
+        
+        .upload-section h2 {
+            margin-bottom: 0.5rem;
+        }
+        
+        .section-description {
+            color: #a8dadc;
+            margin-bottom: 2rem;
+        }
+        
+        .upload-area {
+            border: 2px dashed rgba(62, 146, 204, 0.5);
+            border-radius: var(--border-radius);
+            padding: 3rem 2rem;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .upload-area:hover {
+            border-color: var(--secondary-color);
+            background-color: rgba(62, 146, 204, 0.05);
+        }
+        
+        .upload-icon {
+            font-size: 3rem;
+            color: var(--secondary-color);
+            margin-bottom: 1rem;
+        }
+        
+        .upload-area h3 {
+            margin-bottom: 0.5rem;
+        }
+        
+        .upload-progress {
+            display: none;
+            margin-bottom: 1.5rem;
+        }
+        
+        .uploaded-file {
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            background-color: rgba(62, 146, 204, 0.1);
+            border-radius: var(--border-radius-sm);
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .file-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .file-info i {
+            font-size: 2rem;
+            color: var(--secondary-color);
+        }
+        
+        .file-info h4 {
+            margin-bottom: 0.2rem;
+        }
+        
+        .file-info p {
+            margin: 0;
+            color: #a8dadc;
+            font-size: 0.9rem;
+        }
+        
+        .results-section {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+        
+        .score-card, .suggestions-card, .analytics-card {
+            padding: 2rem;
+        }
+        
+        .score-display {
+            display: flex;
+            align-items: center;
+            gap: 3rem;
+            margin-top: 1.5rem;
+        }
+        
+        @media (max-width: 768px) {
+            .score-display {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+        
+        .score-circle {
+            position: relative;
+            width: 200px;
+            height: 200px;
+        }
+        
+        .circle-progress {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .score-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+        
+        .score-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: var(--light-color);
+            line-height: 1;
+        }
+        
+        .score-max {
+            font-size: 1.5rem;
+            color: #a8dadc;
+        }
+        
+        .score-description h3 {
+            margin-bottom: 1rem;
+        }
+        
+        .suggestions-list {
+            margin-top: 1.5rem;
+        }
+        
+        .suggestion-item {
+            display: flex;
+            gap: 1.5rem;
+            padding: 1.5rem 0;
+            border-bottom: 1px solid rgba(62, 146, 204, 0.2);
+        }
+        
+        .suggestion-item:last-child {
+            border-bottom: none;
+        }
+        
+        .suggestion-icon {
+            font-size: 1.5rem;
+            color: var(--secondary-color);
+            flex-shrink: 0;
+        }
+        
+        .suggestion-content h4 {
+            margin-bottom: 0.5rem;
+        }
+        
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        @media (max-width: 768px) {
+            .analytics-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .analytics-item {
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: var(--border-radius-sm);
+            padding: 1.5rem;
+        }
+        
+        .analytics-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--secondary-color);
+            margin-bottom: 0.5rem;
+        }
+        
+        .analytics-label {
+            color: #a8dadc;
+            margin-bottom: 0.8rem;
+        }
+        
+        .analytics-bar {
+            height: 8px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .bar-fill {
+            height: 100%;
+            background: var(--gradient-2);
+            border-radius: 4px;
+            transition: width 1.5s ease;
+        }
+        
+        .tips-section {
+            margin-top: 4rem;
+        }
+        
+        .tips-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .tip-card {
+            background: rgba(29, 53, 87, 0.5);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            text-align: center;
+            transition: var(--transition);
+            border: 1px solid rgba(62, 146, 204, 0.1);
+        }
+        
+        .tip-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--secondary-color);
+        }
+        
+        .tip-icon {
+            font-size: 2.5rem;
+            color: var(--secondary-color);
+            margin-bottom: 1.5rem;
+        }
+        
+        .tip-card h3 {
+            margin-bottom: 1rem;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</body>
+</html>

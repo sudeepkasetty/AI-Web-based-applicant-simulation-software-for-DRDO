@@ -1,0 +1,1323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Question Bank - Domain Selector</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            position: relative;
+        }
+        
+        /* Top Navigation Bar */
+        .top-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #eee;
+        }
+        
+        .home-btn {
+            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            font-size: 16px;
+            border-radius: 50px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+        
+        .home-btn:hover {
+            background: linear-gradient(135deg, #495057 0%, #343a40 100%);
+            transform: translateX(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .nav-title {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .nav-link {
+            padding: 8px 15px;
+            border-radius: 20px;
+            background: #f8f9fa;
+            color: #667eea;
+            text-decoration: none;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+        
+        .nav-link:hover {
+            background: #667eea;
+            color: white;
+        }
+        
+        /* Domain Selection Screen */
+        #domainSelection {
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid #667eea;
+        }
+        
+        h1 {
+            color: #333;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .subtitle {
+            color: #666;
+            font-size: 1.1em;
+            margin-bottom: 10px;
+        }
+        
+        .instructions {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: left;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .instructions h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .instructions ul {
+            list-style-type: none;
+            padding-left: 20px;
+        }
+        
+        .instructions li {
+            margin: 10px 0;
+            padding-left: 25px;
+            position: relative;
+        }
+        
+        .instructions li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #4CAF50;
+            font-weight: bold;
+        }
+        
+        /* Domain Selection Grid */
+        .domain-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 40px 0;
+        }
+        
+        .domain-card {
+            background: white;
+            border: 3px solid #e0e0e0;
+            border-radius: 15px;
+            padding: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .domain-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        
+        .domain-card.selected {
+            border-color: #667eea;
+            background: linear-gradient(135deg, #f8f9ff 0%, #f0f2ff 100%);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.2);
+        }
+        
+        .domain-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+        
+        .domain-name {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .domain-count {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 15px;
+        }
+        
+        .domain-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+            margin-top: 10px;
+        }
+        
+        .domain-tag {
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 3px 10px;
+            border-radius: 15px;
+            font-size: 0.8em;
+        }
+        
+        .checkbox-container {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+        }
+        
+        .domain-checkbox {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: #667eea;
+        }
+        
+        /* Selection Controls */
+        .selection-controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 40px 0 20px 0;
+            flex-wrap: wrap;
+        }
+        
+        .control-btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .select-all-btn {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+        }
+        
+        .clear-btn {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            color: white;
+        }
+        
+        .start-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 50px;
+            font-size: 18px;
+        }
+        
+        .control-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        
+        .counter {
+            background: #f8f9fa;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: bold;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+        
+        /* Question Display Screen */
+        #questionDisplay {
+            display: none;
+        }
+        
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #eee;
+        }
+        
+        .back-btn {
+            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            font-size: 16px;
+            border-radius: 50px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+        
+        .back-btn:hover {
+            background: linear-gradient(135deg, #495057 0%, #343a40 100%);
+            transform: translateX(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .action-btn {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 14px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4);
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .stat-box {
+            text-align: center;
+            padding: 15px;
+            min-width: 150px;
+        }
+        
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+        
+        .selected-domains-bar {
+            background: #f0f2ff;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .selected-domain-tag {
+            background: #667eea;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .change-selection-btn {
+            background: #ff9800;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-left: auto;
+        }
+        
+        .domain-section {
+            margin: 40px 0;
+            padding: 20px;
+            border-radius: 10px;
+            background: #f8f9fa;
+        }
+        
+        .domain-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid;
+        }
+        
+        .domain-title {
+            font-size: 1.8em;
+            font-weight: bold;
+        }
+        
+        .domain-count-badge {
+            background: #667eea;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+        
+        .cs { border-color: #4CAF50; }
+        .ece { border-color: #2196F3; }
+        .mech { border-color: #FF9800; }
+        .civil { border-color: #9C27B0; }
+        .chem { border-color: #f44336; }
+        .biotech { border-color: #009688; }
+        
+        .questions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+        }
+        
+        .question-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+            border-left: 5px solid #667eea;
+        }
+        
+        .question-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+        
+        .question-id {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+        }
+        
+        .question-text {
+            font-size: 1.1em;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        
+        .options {
+            margin: 10px 0;
+        }
+        
+        .option {
+            padding: 8px 12px;
+            margin: 5px 0;
+            background: #f5f5f5;
+            border-radius: 5px;
+            border-left: 3px solid #ddd;
+            transition: all 0.3s;
+        }
+        
+        .option:hover {
+            background: #e3f2fd;
+            border-left-color: #2196F3;
+        }
+        
+        .correct-answer {
+            background: #e8f5e9;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            border-left: 3px solid #4CAF50;
+            font-weight: bold;
+            color: #2e7d32;
+        }
+        
+        .difficulty {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        
+        .easy { background: #e8f5e9; color: #2e7d32; }
+        .medium { background: #fff3e0; color: #ef6c00; }
+        .hard { background: #ffebee; color: #c62828; }
+        
+        .refresh-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 16px;
+            border-radius: 50px;
+            cursor: pointer;
+            margin: 15px auto;
+            transition: transform 0.3s, box-shadow 0.3s;
+            font-weight: bold;
+            display: block;
+        }
+        
+        .refresh-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .timestamp {
+            text-align: center;
+            color: #666;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            color: #666;
+            font-size: 0.9em;
+        }
+        
+        /* Home Page Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        .modal h2 {
+            color: #333;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .modal-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .modal-btn {
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .modal-btn.home {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .modal-btn.dashboard {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+        }
+        
+        .modal-btn.exam {
+            background: linear-gradient(135deg, #ff9800 0%, #ff5722 100%);
+            color: white;
+        }
+        
+        .modal-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .questions-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .domain-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .selection-controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .navigation-buttons {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .btn-group {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .top-nav {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .nav-links {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Home Page Selection Modal -->
+    <div id="homeModal" class="modal">
+        <div class="modal-content">
+            <h2>Where would you like to go?</h2>
+            <p>Select your destination:</p>
+            
+            <div class="modal-buttons">
+                <button class="modal-btn home" onclick="redirectToPage('index2.html')">
+                    🏠 Main Home Page
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Top Navigation Bar -->
+        <div class="top-nav">
+            <button class="home-btn" onclick="showHomeModal()">
+                ← Back to Home
+            </button>
+            
+            <div class="nav-title">🎯 Dynamic Question Bank</div>
+            
+            <div class="nav-links">
+                <a href="#" class="nav-link" onclick="showHomeModal()">🏠 Home</a>
+                <a href="#" class="nav-link" onclick="window.print()">🖨️ Print</a>
+                <a href="#" class="nav-link" onclick="downloadAsPDF()">📄 PDF</a>
+            </div>
+        </div>
+        
+        <!-- Domain Selection Screen -->
+        <div id="domainSelection">
+            <div class="header">
+                <h1>Select Your Domains</h1>
+                <p class="subtitle">Choose one or multiple domains to generate customized question sets</p>
+            </div>
+            
+            <div class="instructions">
+                <h3>How to use this question bank:</h3>
+                <ul>
+                    <li>Select one or multiple domains from the options below</li>
+                    <li>Each domain has 15-20 unique questions</li>
+                    <li>Questions are randomly generated each time</li>
+                    <li>Use "Back to Home" button above to return to main menu</li>
+                </ul>
+            </div>
+            
+            <div class="domain-grid" id="domainGrid">
+                <!-- Domain cards will be dynamically generated -->
+            </div>
+            
+            <div class="selection-controls">
+                <div class="counter">
+                    Selected: <span id="selectedCount">0</span> / <span id="totalDomainsCount">6</span> domains
+                </div>
+                <button class="control-btn select-all-btn" onclick="selectAllDomains()">
+                    <span>✓</span> Select All
+                </button>
+                <button class="control-btn clear-btn" onclick="clearAllDomains()">
+                    <span>✕</span> Clear All
+                </button>
+                <button class="control-btn start-btn" onclick="startQuestionBank()" id="startBtn" disabled>
+                    <span>🚀</span> Generate Questions
+                </button>
+            </div>
+        </div>
+        
+        <!-- Question Display Screen -->
+        <div id="questionDisplay">
+            <div class="header">
+                <h1>📚 Generated Questions</h1>
+                <p class="subtitle" id="selectedDomainsText">Based on your selected domains</p>
+            </div>
+            
+            <div class="selected-domains-bar" id="selectedDomainsBar">
+                <!-- Selected domains will appear here -->
+            </div>
+            
+            <div class="stats">
+                <div class="stat-box">
+                    <div class="stat-value" id="totalQuestions">0</div>
+                    <div class="stat-label">Total Questions</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="domainCount">0</div>
+                    <div class="stat-label">Domains</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="easyCount">0</div>
+                    <div class="stat-label">Easy Questions</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="mediumCount">0</div>
+                    <div class="stat-label">Medium Questions</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="hardCount">0</div>
+                    <div class="stat-label">Hard Questions</div>
+                </div>
+            </div>
+            
+            <div id="questionBankContainer">
+                <!-- Questions will be loaded here -->
+            </div>
+            
+            <div class="navigation-buttons">
+                <button class="back-btn" onclick="goBackToSelection()">
+                    ← Back to Domain Selection
+                </button>
+                <div class="btn-group">
+                    <button class="action-btn" onclick="downloadAsPDF()">
+                        📄 Download PDF
+                    </button>
+                    <button class="action-btn" onclick="printQuestions()">
+                        🖨️ Print
+                    </button>
+                    <button class="action-btn" onclick="regenerateQuestions()">
+                        🔄 Regenerate
+                    </button>
+                </div>
+            </div>
+            
+            <button class="refresh-btn" onclick="regenerateQuestions()">
+                🔄 Generate New Questions (Same Domains)
+            </button>
+            
+            <div class="timestamp" id="timestamp">
+                Generated on: Loading...
+            </div>
+            
+            <div class="footer">
+                <p>💡 Questions are randomly selected from your chosen domains</p>
+                <p>Use the "Back to Home" button at the top to return to main menu</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Domain definitions with icons, colors, and descriptions
+        const domains = [
+            {
+                id: 'computerScience',
+                name: 'Computer Science',
+                icon: '💻',
+                color: 'cs',
+                description: 'Programming, Algorithms, Data Structures',
+                tags: ['Programming', 'Algorithms', 'Database', 'Networking'],
+                questionsPerDomain: 20
+            },
+            {
+                id: 'ece',
+                name: 'Electronics & Communication',
+                icon: '🔌',
+                color: 'ece',
+                description: 'Circuits, Signals, Communication Systems',
+                tags: ['Circuits', 'Signals', 'VLSI', 'DSP'],
+                questionsPerDomain: 15
+            },
+            {
+                id: 'mechanical',
+                name: 'Mechanical Engineering',
+                icon: '⚙️',
+                color: 'mech',
+                description: 'Thermodynamics, Mechanics, Manufacturing',
+                tags: ['Thermo', 'CAD', 'Manufacturing', 'Dynamics'],
+                questionsPerDomain: 15
+            },
+            {
+                id: 'civil',
+                name: 'Civil Engineering',
+                icon: '🏗️',
+                color: 'civil',
+                description: 'Structures, Construction, Materials',
+                tags: ['Concrete', 'Structures', 'Surveying', 'Geotech'],
+                questionsPerDomain: 12
+            },
+            {
+                id: 'chemical',
+                name: 'Chemical Engineering',
+                icon: '⚗️',
+                color: 'chem',
+                description: 'Processes, Reactions, Operations',
+                tags: ['Reactions', 'Process', 'Thermo', 'Operations'],
+                questionsPerDomain: 12
+            },
+            {
+                id: 'biotechnology',
+                name: 'Biotechnology',
+                icon: '🧬',
+                color: 'biotech',
+                description: 'Genetics, Microbiology, Bio-processes',
+                tags: ['Genetics', 'Microbiology', 'Biochemistry', 'PCR'],
+                questionsPerDomain: 12
+            }
+        ];
+
+        // Store selected domains
+        let selectedDomains = [];
+        
+        // Question database
+        const questionDatabase = {
+            computerScience: [
+                { id: "CS", text: "Which data structure uses LIFO (Last In First Out) principle?", options: ["Queue", "Stack", "Array", "Tree"], correct: "Stack", difficulty: "easy" },
+                { id: "CS", text: "What does API stand for in programming?", options: ["Application Programming Interface", "Advanced Programming Interface", "Application Process Integration", "Automated Programming Interface"], correct: "Application Programming Interface", difficulty: "easy" },
+                { id: "CS", text: "Which sorting algorithm has the worst-case time complexity of O(n²)?", options: ["Merge Sort", "Quick Sort", "Heap Sort", "Bubble Sort"], correct: "Bubble Sort", difficulty: "medium" },
+                { id: "CS", text: "What is the time complexity of binary search?", options: ["O(n)", "O(n²)", "O(log n)", "O(1)"], correct: "O(log n)", difficulty: "medium" },
+                { id: "CS", text: "Which protocol is used for secure communication over a computer network?", options: ["HTTP", "FTP", "HTTPS", "SMTP"], correct: "HTTPS", difficulty: "easy" },
+                { id: "CS", text: "What does SQL stand for?", options: ["Structured Query Language", "Simple Query Language", "System Query Language", "Standard Query Language"], correct: "Structured Query Language", difficulty: "easy" },
+                { id: "CS", text: "Which programming language is known for its use in machine learning?", options: ["Java", "Python", "C++", "Ruby"], correct: "Python", difficulty: "easy" },
+                { id: "CS", text: "What is the purpose of an index in a database?", options: ["To store data", "To improve query performance", "To backup data", "To encrypt data"], correct: "To improve query performance", difficulty: "medium" },
+                { id: "CS", text: "Which of these is not a NoSQL database?", options: ["MongoDB", "Cassandra", "Redis", "MySQL"], correct: "MySQL", difficulty: "medium" },
+                { id: "CS", text: "What does REST stand for in web services?", options: ["Representational State Transfer", "Remote Execution State Transfer", "Resource State Transfer", "Representational System Transfer"], correct: "Representational State Transfer", difficulty: "hard" },
+                { id: "CS", text: "What is the main advantage of using Docker containers?", options: ["Faster compilation", "Environment consistency", "Better memory management", "Improved CPU performance"], correct: "Environment consistency", difficulty: "medium" },
+                { id: "CS", text: "Which algorithm is used for page replacement in operating systems?", options: ["FIFO", "LIFO", "BFS", "DFS"], correct: "FIFO", difficulty: "hard" }
+            ],
+            ece: [
+                { id: "ECE", text: "What does VLSI stand for?", options: ["Very Large Scale Integration", "Variable Logic System Integration", "Voltage Level System Interface", "Very Large System Integration"], correct: "Very Large Scale Integration", difficulty: "easy" },
+                { id: "ECE", text: "Which modulation technique is used in Wi-Fi?", options: ["AM", "FM", "QAM", "PM"], correct: "QAM", difficulty: "medium" },
+                { id: "ECE", text: "What is the typical frequency range of microwaves?", options: ["300 MHz - 300 GHz", "3 kHz - 300 kHz", "30 Hz - 300 Hz", "3 GHz - 30 GHz"], correct: "300 MHz - 300 GHz", difficulty: "hard" },
+                { id: "ECE", text: "Which component stores energy in an electric field?", options: ["Resistor", "Inductor", "Capacitor", "Transistor"], correct: "Capacitor", difficulty: "easy" },
+                { id: "ECE", text: "What does DSP stand for?", options: ["Digital Signal Processing", "Digital System Protocol", "Data Signal Processing", "Digital Serial Port"], correct: "Digital Signal Processing", difficulty: "easy" },
+                { id: "ECE", text: "Which semiconductor device is used for amplification?", options: ["Diode", "Transistor", "Resistor", "Capacitor"], correct: "Transistor", difficulty: "easy" },
+                { id: "ECE", text: "What is the unit of frequency?", options: ["Ohm", "Farad", "Henry", "Hertz"], correct: "Hertz", difficulty: "easy" },
+                { id: "ECE", text: "Which multiplexing technique is used in optical fiber communication?", options: ["TDM", "FDM", "WDM", "CDM"], correct: "WDM", difficulty: "hard" }
+            ],
+            mechanical: [
+                { id: "MECH", text: "What is the SI unit of force?", options: ["Joule", "Watt", "Newton", "Pascal"], correct: "Newton", difficulty: "easy" },
+                { id: "MECH", text: "Which law states that energy cannot be created or destroyed?", options: ["Newton's First Law", "Second Law of Thermodynamics", "Law of Conservation of Energy", "Ohm's Law"], correct: "Law of Conservation of Energy", difficulty: "medium" },
+                { id: "MECH", text: "What does CAD stand for in mechanical engineering?", options: ["Computer Aided Design", "Computer Assisted Drawing", "Computer Automated Design", "Computer Analytical Design"], correct: "Computer Aided Design", difficulty: "easy" },
+                { id: "MECH", text: "Which material is known for its high strength-to-weight ratio?", options: ["Steel", "Aluminum", "Titanium", "Carbon Fiber"], correct: "Carbon Fiber", difficulty: "medium" },
+                { id: "MECH", text: "What type of engine converts heat energy into mechanical work?", options: ["Electric Motor", "Heat Engine", "Hydraulic Motor", "Pneumatic Engine"], correct: "Heat Engine", difficulty: "easy" },
+                { id: "MECH", text: "Which bearing type supports axial loads?", options: ["Ball Bearing", "Roller Bearing", "Thrust Bearing", "Needle Bearing"], correct: "Thrust Bearing", difficulty: "hard" }
+            ],
+            civil: [
+                { id: "CIVIL", text: "What does RCC stand for in construction?", options: ["Reinforced Cement Concrete", "Reinforced Concrete Composite", "Reinforced Construction Cement", "Reinforced Column Concrete"], correct: "Reinforced Cement Concrete", difficulty: "easy" },
+                { id: "CIVIL", text: "Which test determines the consistency of concrete?", options: ["Compression Test", "Slump Test", "Tensile Test", "Shear Test"], correct: "Slump Test", difficulty: "medium" },
+                { id: "CIVIL", text: "What is the minimum curing period for concrete?", options: ["7 days", "14 days", "21 days", "28 days"], correct: "7 days", difficulty: "easy" },
+                { id: "CIVIL", text: "Which type of foundation is used for high-rise buildings?", options: ["Spread Footing", "Raft Foundation", "Pile Foundation", "Mat Foundation"], correct: "Pile Foundation", difficulty: "medium" }
+            ],
+            chemical: [
+                { id: "CHEM", text: "What is the chemical formula for water?", options: ["H2O", "HO2", "H2O2", "OH2"], correct: "H2O", difficulty: "easy" },
+                { id: "CHEM", text: "Which process separates liquids based on boiling points?", options: ["Filtration", "Distillation", "Crystallization", "Sedimentation"], correct: "Distillation", difficulty: "medium" },
+                { id: "CHEM", text: "What is the pH of pure water?", options: ["0", "7", "14", "10"], correct: "7", difficulty: "easy" },
+                { id: "CHEM", text: "Which catalyst is used in the Haber process?", options: ["Platinum", "Nickel", "Iron", "Palladium"], correct: "Iron", difficulty: "hard" }
+            ],
+            biotechnology: [
+                { id: "BIO", text: "What does PCR stand for in biotechnology?", options: ["Polymerase Chain Reaction", "Protein Chain Reaction", "Polymer Chain Reaction", "Polypeptide Chain Reaction"], correct: "Polymerase Chain Reaction", difficulty: "easy" },
+                { id: "BIO", text: "Which enzyme is used in DNA replication?", options: ["DNA Polymerase", "RNA Polymerase", "Helicase", "Ligase"], correct: "DNA Polymerase", difficulty: "medium" },
+                { id: "BIO", text: "What is the basic unit of heredity?", options: ["Chromosome", "Gene", "Protein", "Cell"], correct: "Gene", difficulty: "easy" },
+                { id: "BIO", text: "Which technique is used to separate DNA fragments?", options: ["PCR", "Gel Electrophoresis", "Centrifugation", "Chromatography"], correct: "Gel Electrophoresis", difficulty: "medium" }
+            ]
+        };
+
+        // Additional questions
+        const additionalQuestions = {
+            computerScience: [
+                { id: "CS", text: "Which of these is a statically typed language?", options: ["Python", "JavaScript", "TypeScript", "PHP"], correct: "TypeScript", difficulty: "medium" },
+                { id: "CS", text: "What is the purpose of git?", options: ["Code compilation", "Version control", "Database management", "Network configuration"], correct: "Version control", difficulty: "easy" },
+                { id: "CS", text: "Which algorithm is used for shortest path finding?", options: ["Dijkstra's", "Bubble Sort", "Quick Sort", "Binary Search"], correct: "Dijkstra's", difficulty: "hard" },
+                { id: "CS", text: "What does MVC stand for?", options: ["Model View Controller", "Main View Controller", "Model Visual Control", "Main Visual Component"], correct: "Model View Controller", difficulty: "medium" }
+            ],
+            ece: [
+                { id: "ECE", text: "Which component amplifies signals?", options: ["Resistor", "Capacitor", "Transistor", "Diode"], correct: "Transistor", difficulty: "easy" },
+                { id: "ECE", text: "What is the unit of capacitance?", options: ["Ohm", "Farad", "Henry", "Hertz"], correct: "Farad", difficulty: "easy" },
+                { id: "ECE", text: "Which modulation is used in FM radio?", options: ["Amplitude", "Frequency", "Phase", "Pulse"], correct: "Frequency", difficulty: "medium" }
+            ],
+            mechanical: [
+                { id: "MECH", text: "What is the unit of pressure?", options: ["Newton", "Pascal", "Joule", "Watt"], correct: "Pascal", difficulty: "easy" },
+                { id: "MECH", text: "Which gear transmits motion between perpendicular shafts?", options: ["Spur", "Helical", "Bevel", "Worm"], correct: "Bevel", difficulty: "hard" }
+            ],
+            civil: [
+                { id: "CIVIL", text: "Which cement has high sulfate resistance?", options: ["OPC", "PPC", "SRC", "HAC"], correct: "SRC", difficulty: "hard" }
+            ],
+            chemical: [
+                { id: "CHEM", text: "Which process converts raw material to useful product?", options: ["Separation", "Reaction", "Purification", "All of the above"], correct: "All of the above", difficulty: "easy" }
+            ],
+            biotechnology: [
+                { id: "BIO", text: "What is cloning?", options: ["Copying DNA", "Making identical organism", "Gene editing", "Protein synthesis"], correct: "Making identical organism", difficulty: "medium" }
+            ]
+        };
+
+        // ================== HOME REDIRECTION FUNCTIONS ==================
+        
+        // Show home modal
+        function showHomeModal() {
+            const modal = document.getElementById('homeModal');
+            modal.style.display = 'flex';
+        }
+
+        // Close modal
+        function closeModal() {
+            const modal = document.getElementById('homeModal');
+            modal.style.display = 'none';
+        }
+
+        // Redirect to a specific page
+        function redirectToPage(pageUrl) {
+            // Store current state
+            localStorage.setItem('lastVisited', window.location.href);
+            localStorage.setItem('lastVisitTime', new Date().toISOString());
+            
+            // Try to redirect
+            window.location.href = pageUrl;
+            
+            // If redirect fails (page doesn't exist), show alert
+            setTimeout(() => {
+                if (window.location.href === window.location.href) { // Still on same page
+                    alert(`Page "${pageUrl}" not found.\n\nSuggestions:\n1. Create ${pageUrl} in same folder\n2. Use browser's back button\n3. Continue using Question Bank`);
+                    closeModal();
+                }
+            }, 100);
+        }
+
+        // Direct redirect to home (without modal)
+        function goHomeDirect() {
+            const possiblePages = [
+                'index.html',
+                'home.html',
+                'main.html',
+                'dashboard.html',
+                'exam-portal.html',
+                '../index.html',
+                './index.html',
+                '/'
+            ];
+            
+            // Try each possible page
+            for (let page of possiblePages) {
+                try {
+                    const test = new XMLHttpRequest();
+                    test.open('HEAD', page, false);
+                    test.send();
+                    if (test.status !== 404) {
+                        window.location.href = page;
+                        return;
+                    }
+                } catch (e) {
+                    continue;
+                }
+            }
+            
+            // If all fail, show modal
+            showHomeModal();
+        }
+
+        // ================== DOMAIN SELECTION FUNCTIONS ==================
+        
+        // Initialize domain selection screen
+        function initializeDomainSelection() {
+            const domainGrid = document.getElementById('domainGrid');
+            domainGrid.innerHTML = '';
+            
+            domains.forEach(domain => {
+                const domainCard = document.createElement('div');
+                domainCard.className = 'domain-card';
+                domainCard.dataset.domainId = domain.id;
+                domainCard.onclick = () => toggleDomainSelection(domain.id);
+                
+                domainCard.innerHTML = `
+                    <div class="checkbox-container">
+                        <input type="checkbox" class="domain-checkbox" id="checkbox-${domain.id}" 
+                               onclick="event.stopPropagation(); toggleDomainSelection('${domain.id}')">
+                    </div>
+                    <div class="domain-icon">${domain.icon}</div>
+                    <div class="domain-name">${domain.name}</div>
+                    <div class="domain-count">${domain.questionsPerDomain} questions</div>
+                    <div class="domain-tags">
+                        ${domain.tags.map(tag => `<span class="domain-tag">${tag}</span>`).join('')}
+                    </div>
+                `;
+                
+                domainGrid.appendChild(domainCard);
+            });
+            
+            document.getElementById('totalDomainsCount').textContent = domains.length;
+            updateSelectionCount();
+        }
+
+        // Toggle domain selection
+        function toggleDomainSelection(domainId) {
+            const domainCard = document.querySelector(`[data-domain-id="${domainId}"]`);
+            const checkbox = document.getElementById(`checkbox-${domainId}`);
+            
+            if (selectedDomains.includes(domainId)) {
+                selectedDomains = selectedDomains.filter(id => id !== domainId);
+                domainCard.classList.remove('selected');
+                checkbox.checked = false;
+            } else {
+                selectedDomains.push(domainId);
+                domainCard.classList.add('selected');
+                checkbox.checked = true;
+            }
+            
+            updateSelectionCount();
+            updateStartButton();
+        }
+
+        // Update selection counter
+        function updateSelectionCount() {
+            const count = selectedDomains.length;
+            document.getElementById('selectedCount').textContent = count;
+            
+            const startBtn = document.getElementById('startBtn');
+            if (count === 0) {
+                startBtn.innerHTML = '<span>🚀</span> Select at least 1 domain';
+            } else if (count === 1) {
+                const domain = domains.find(d => d.id === selectedDomains[0]);
+                startBtn.innerHTML = `<span>🚀</span> Generate ${domain.questionsPerDomain} ${domain.name} Questions`;
+            } else {
+                const totalQuestions = selectedDomains.reduce((total, domainId) => {
+                    const domain = domains.find(d => d.id === domainId);
+                    return total + domain.questionsPerDomain;
+                }, 0);
+                startBtn.innerHTML = `<span>🚀</span> Generate ${totalQuestions} Questions (${count} domains)`;
+            }
+        }
+
+        // Update start button state
+        function updateStartButton() {
+            const startBtn = document.getElementById('startBtn');
+            startBtn.disabled = selectedDomains.length === 0;
+        }
+
+        // Select all domains
+        function selectAllDomains() {
+            selectedDomains = domains.map(domain => domain.id);
+            domains.forEach(domain => {
+                const domainCard = document.querySelector(`[data-domain-id="${domain.id}"]`);
+                const checkbox = document.getElementById(`checkbox-${domain.id}`);
+                domainCard.classList.add('selected');
+                checkbox.checked = true;
+            });
+            updateSelectionCount();
+            updateStartButton();
+        }
+
+        // Clear all domains
+        function clearAllDomains() {
+            selectedDomains = [];
+            domains.forEach(domain => {
+                const domainCard = document.querySelector(`[data-domain-id="${domain.id}"]`);
+                const checkbox = document.getElementById(`checkbox-${domain.id}`);
+                domainCard.classList.remove('selected');
+                checkbox.checked = false;
+            });
+            updateSelectionCount();
+            updateStartButton();
+        }
+
+        // Start question bank with selected domains
+        function startQuestionBank() {
+            if (selectedDomains.length === 0) {
+                alert("Please select at least one domain!");
+                return;
+            }
+            
+            document.getElementById('domainSelection').style.display = 'none';
+            document.getElementById('questionDisplay').style.display = 'block';
+            
+            updateSelectedDomainsDisplay();
+            generateQuestions();
+        }
+
+        // Go back to domain selection
+        function goBackToSelection() {
+            document.getElementById('questionDisplay').style.display = 'none';
+            document.getElementById('domainSelection').style.display = 'block';
+        }
+
+        // Update selected domains display bar
+        function updateSelectedDomainsDisplay() {
+            const selectedDomainsText = document.getElementById('selectedDomainsText');
+            const selectedDomainsBar = document.getElementById('selectedDomainsBar');
+            
+            let domainsText = selectedDomains.map(domainId => {
+                const domain = domains.find(d => d.id === domainId);
+                return domain.name;
+            }).join(', ');
+            
+            selectedDomainsText.textContent = `Based on: ${domainsText}`;
+            
+            selectedDomainsBar.innerHTML = `
+                <span>Selected Domains:</span>
+                ${selectedDomains.map(domainId => {
+                    const domain = domains.find(d => d.id === domainId);
+                    return `<span class="selected-domain-tag">${domain.icon} ${domain.name}</span>`;
+                }).join('')}
+                <button class="change-selection-btn" onclick="goBackToSelection()">
+                    Change Selection
+                </button>
+            `;
+        }
+
+        // Get random questions from a domain
+        function getRandomQuestions(domainId, count) {
+            const allQuestions = [
+                ...questionDatabase[domainId] || [],
+                ...(additionalQuestions[domainId] || [])
+            ];
+            
+            const shuffled = [...allQuestions].sort(() => Math.random() - 0.5);
+            return shuffled.slice(0, Math.min(count, shuffled.length));
+        }
+
+        // Generate questions based on selected domains
+        function generateQuestions() {
+            const container = document.getElementById('questionBankContainer');
+            let html = '';
+            let totalQuestions = 0;
+            let easyCount = 0, mediumCount = 0, hardCount = 0;
+            
+            selectedDomains.forEach(domainId => {
+                const domain = domains.find(d => d.id === domainId);
+                const questions = getRandomQuestions(domainId, domain.questionsPerDomain);
+                
+                if (questions.length === 0) return;
+                
+                totalQuestions += questions.length;
+                
+                questions.forEach(q => {
+                    if (q.difficulty === 'easy') easyCount++;
+                    else if (q.difficulty === 'medium') mediumCount++;
+                    else hardCount++;
+                });
+                
+                html += `
+                    <div class="domain-section ${domain.color}">
+                        <div class="domain-header">
+                            <div class="domain-title">${domain.icon} ${domain.name}</div>
+                            <div class="domain-count-badge">${questions.length} Questions</div>
+                        </div>
+                        <div class="questions-grid">
+                            ${questions.map((q, index) => `
+                                <div class="question-card">
+                                    <div class="question-id">${domain.id.toUpperCase().substr(0,2)}${(index + 1).toString().padStart(2, '0')}</div>
+                                    <div class="question-text">${q.text}</div>
+                                    <div class="options">
+                                        ${q.options.map((opt, i) => `
+                                            <div class="option">${String.fromCharCode(65 + i)}. ${opt}</div>
+                                        `).join('')}
+                                    </div>
+                                    <div class="correct-answer">✓ Correct Answer: ${q.correct}</div>
+                                    <div class="difficulty ${q.difficulty}">${q.difficulty.toUpperCase()}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+            
+            // Update statistics
+            document.getElementById('totalQuestions').textContent = totalQuestions;
+            document.getElementById('domainCount').textContent = selectedDomains.length;
+            document.getElementById('easyCount').textContent = easyCount;
+            document.getElementById('mediumCount').textContent = mediumCount;
+            document.getElementById('hardCount').textContent = hardCount;
+            
+            // Update timestamp
+            const now = new Date();
+            document.getElementById('timestamp').innerHTML = 
+                `🕒 Generated on: ${now.toLocaleDateString()} at ${now.toLocaleTimeString()}`;
+        }
+
+        // Regenerate questions (same domains)
+        function regenerateQuestions() {
+            generateQuestions();
+        }
+
+        // Download as PDF
+        function downloadAsPDF() {
+            alert("To download as PDF:\n1. Click Print (Ctrl+P)\n2. Choose 'Save as PDF' as destination\n3. Adjust settings and save");
+            window.print();
+        }
+
+        // Print questions
+        function printQuestions() {
+            window.print();
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            // Ctrl+R or Cmd+R to regenerate questions
+            if ((e.ctrlKey || e.metaKey) && e.key === 'r') {
+                e.preventDefault();
+                if (document.getElementById('questionDisplay').style.display !== 'none') {
+                    regenerateQuestions();
+                }
+            }
+            // Escape to close modal or go back
+            if (e.key === 'Escape') {
+                const modal = document.getElementById('homeModal');
+                if (modal.style.display === 'flex') {
+                    closeModal();
+                } else if (document.getElementById('questionDisplay').style.display !== 'none') {
+                    goBackToSelection();
+                }
+            }
+            // H for home
+            if (e.key === 'h' && e.altKey) {
+                showHomeModal();
+            }
+            // Enter to start when in selection screen
+            if (e.key === 'Enter' && document.getElementById('domainSelection').style.display !== 'none') {
+                if (selectedDomains.length > 0) {
+                    startQuestionBank();
+                }
+            }
+        });
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('homeModal');
+            if (event.target == modal) {
+                closeModal();
+            }
+        };
+
+        // Initialize when page loads
+        window.onload = function() {
+            initializeDomainSelection();
+            
+            // Try to load previous selection
+            const savedSelection = localStorage.getItem('questionBankSelection');
+            if (savedSelection) {
+                try {
+                    const parsed = JSON.parse(savedSelection);
+                    if (Array.isArray(parsed)) {
+                        parsed.forEach(domainId => {
+                            if (domains.some(d => d.id === domainId)) {
+                                toggleDomainSelection(domainId);
+                            }
+                        });
+                    }
+                } catch (e) {
+                    console.log("No previous selection found");
+                }
+            }
+        };
+
+        // Save selection when leaving page
+        window.addEventListener('beforeunload', function() {
+            localStorage.setItem('questionBankSelection', JSON.stringify(selectedDomains));
+        });
+
+
+        function redirectToPage(pageUrl) {
+    // Change this to your actual home page URL
+    if (pageUrl === 'index-demo.html') {
+        window.location.href = 'index-demo.html';
+    } else {
+        window.location.href = pageUrl;
+    }
+}
+    </script>
+</body>
+</html>

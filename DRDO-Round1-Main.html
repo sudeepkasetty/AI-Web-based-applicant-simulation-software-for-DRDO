@@ -1,0 +1,4274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Assessment Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* All CSS remains exactly the same as provided */
+        /* ... CSS code remains unchanged ... */
+
+
+        :root {
+            --primary: #7c3aed;
+            --secondary: #5b21b6;
+            --accent: #06b6d4;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --card-bg: #ffffff;
+            --gradient: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%);
+            --gradient-accent: linear-gradient(135deg, #06b6d4 0%, #7c3aed 100%);
+            --shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 25px 50px rgba(0, 0, 0, 0.15);
+            --border-radius: 16px;
+            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f0f4ff 0%, #e6f0ff 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            font-family: 'Poppins', sans-serif;
+            color: var(--dark);
+            line-height: 1.6;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        .bg-elements {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        .bg-element {
+            position: absolute;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(124, 58, 237, 0.1) 0%, rgba(91, 33, 182, 0.1) 100%);
+            animation: float 20s infinite linear;
+        }
+        
+        .bg-element:nth-child(1) {
+            width: 300px;
+            height: 300px;
+            top: 10%;
+            left: 5%;
+            animation-duration: 25s;
+        }
+        
+        .bg-element:nth-child(2) {
+            width: 200px;
+            height: 200px;
+            top: 60%;
+            right: 10%;
+            animation-duration: 30s;
+            animation-delay: 2s;
+        }
+        
+        .bg-element:nth-child(3) {
+            width: 150px;
+            height: 150px;
+            bottom: 10%;
+            left: 20%;
+            animation-duration: 35s;
+            animation-delay: 1s;
+        }
+        
+        .bg-element:nth-child(4) {
+            width: 250px;
+            height: 250px;
+            top: 20%;
+            right: 5%;
+            animation-duration: 40s;
+            animation-delay: 3s;
+        }
+        
+        @keyframes float {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            25% { transform: translate(20px, 20px) rotate(90deg); }
+            50% { transform: translate(0, 40px) rotate(180deg); }
+            75% { transform: translate(-20px, 20px) rotate(270deg); }
+            100% { transform: translate(0, 0) rotate(360deg); }
+        }
+        
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+        
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--primary);
+            border-radius: 50%;
+            animation: particleFloat 15s infinite linear;
+            opacity: 0.3;
+        }
+        
+        @keyframes particleFloat {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.3;
+            }
+            90% {
+                opacity: 0.3;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        .glow {
+            position: fixed;
+            width: 400px;
+            height: 400px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(124, 58, 237, 0.15) 0%, rgba(124, 58, 237, 0) 70%);
+            filter: blur(40px);
+            z-index: -1;
+            animation: glowMove 20s infinite alternate ease-in-out;
+        }
+        
+        .glow:nth-child(1) {
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+        
+        .glow:nth-child(2) {
+            bottom: 10%;
+            right: 10%;
+            animation-delay: 5s;
+        }
+        
+        .glow:nth-child(3) {
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation-delay: 10s;
+        }
+        
+        @keyframes glowMove {
+            0% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(50px, 30px) scale(1.1); }
+            50% { transform: translate(-30px, 50px) scale(0.9); }
+            75% { transform: translate(40px, -20px) scale(1.05); }
+            100% { transform: translate(-20px, -30px) scale(1); }
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1100px;
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+            position: relative;
+            z-index: 1;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            animation: containerSlideIn 1s ease-out;
+        }
+        
+        @keyframes containerSlideIn {
+            from { 
+                opacity: 0; 
+                transform: translateY(50px) scale(0.95);
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0) scale(1);
+            }
+        }
+        
+        .header {
+            background: var(--gradient);
+            color: white;
+            padding: 30px 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%23ffffff" fill-opacity="0.1" d="M0,96L48,112C96,128,192,160,288,186.7C384,213,480,235,576,213.3C672,192,768,128,864,128C960,128,1056,192,1152,197.3C1248,203,1344,149,1392,122.7L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>');
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            letter-spacing: -0.5px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            animation: titleGlow 3s infinite alternate;
+        }
+        
+        @keyframes titleGlow {
+            0% { 
+                text-shadow: 0 0 5px rgba(255, 255, 255, 0.5); 
+            }
+            50% { 
+                text-shadow: 0 0 20px rgba(255, 255, 255, 0.8), 0 0 30px rgba(255, 255, 255, 0.6); 
+            }
+            100% { 
+                text-shadow: 0 0 10px rgba(255, 255, 255, 0.7), 0 0 40px rgba(255, 255, 255, 0.5), 0 0 60px rgba(255, 255, 255, 0.3); 
+            }
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            font-weight: 400;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .screen {
+            display: none;
+            padding: 40px;
+            animation: fadeIn 0.8s ease;
+        }
+        
+        .active {
+            display: block;
+        }
+        
+        h2 {
+            color: var(--primary);
+            margin-bottom: 20px;
+            font-size: 2rem;
+            font-weight: 600;
+            text-align: center;
+            font-family: 'Montserrat', sans-serif;
+            position: relative;
+            display: inline-block;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--gradient);
+            border-radius: 3px;
+            transform: scaleX(0);
+            transform-origin: left;
+            animation: expandLine 1s 0.5s forwards;
+        }
+        
+        @keyframes expandLine {
+            to { transform: scaleX(1); }
+        }
+        
+        h3 {
+            color: var(--dark);
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+        
+        p {
+            color: #64748b;
+            margin-bottom: 25px;
+            line-height: 1.7;
+            font-size: 1.05rem;
+            text-align: center;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 1rem;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: var(--transition);
+            background: #f8fafc;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 16px 30px;
+            background: var(--gradient);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);
+            font-family: 'Poppins', sans-serif;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: 0.5s;
+        }
+        
+        .btn:hover::before {
+            left: 100%;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(124, 58, 237, 0.4);
+        }
+        
+        .btn:active {
+            transform: translateY(-1px);
+        }
+        
+        .btn-block {
+            display: block;
+            width: 100%;
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, var(--success), #22c55e);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger), #e11d48);
+        }
+        
+        .btn-warning {
+            background: linear-gradient(135deg, var(--warning), #d97706);
+        }
+        
+        .btn-admin {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+        }
+        
+        .btn:disabled {
+            background: #94a3b8;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: var(--shadow);
+            border: 1px solid #f1f5f9;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: var(--gradient);
+            transform: scaleY(0);
+            transform-origin: top;
+            transition: transform 0.5s ease;
+        }
+        
+        .card:hover::before {
+            transform: scaleY(1);
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .card-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .permission-box {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 25px;
+            margin: 25px 0;
+            border-left: 5px solid var(--primary);
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+        
+        .permission-box:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .permission-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 20px;
+            border-radius: 12px;
+            background: #f8fafc;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.03);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .permission-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(124, 58, 237, 0.05), transparent);
+            transform: translateX(-100%);
+        }
+        
+        .permission-item:hover::before {
+            animation: shimmer 1.5s;
+        }
+        
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        .permission-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .permission-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--gradient);
+            border-radius: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 20px;
+            color: white;
+            font-size: 24px;
+            box-shadow: 0 4px 10px rgba(124, 58, 237, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .permission-icon::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: rgba(255, 255, 255, 0.1);
+            transform: rotate(45deg);
+            transition: all 0.5s;
+        }
+        
+        .permission-item:hover .permission-icon::after {
+            transform: rotate(45deg) translate(50%, 50%);
+        }
+        
+        .permission-text {
+            flex: 1;
+        }
+        
+        .permission-status {
+            font-weight: 600;
+            font-size: 1rem;
+            padding: 8px 16px;
+            border-radius: 20px;
+            transition: all 0.5s;
+        }
+        
+        .granted {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+            animation: pulseSuccess 2s infinite;
+        }
+        
+        .pending {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+            animation: pulseWarning 2s infinite;
+        }
+        
+        .denied {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+            animation: pulseDanger 2s infinite;
+        }
+        
+        @keyframes pulseSuccess {
+            0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+        
+        @keyframes pulseWarning {
+            0% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(245, 158, 11, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
+        }
+        
+        @keyframes pulseDanger {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+        
+        .question-container {
+            margin-bottom: 30px;
+            padding: 25px;
+            border-radius: var(--border-radius);
+            background: white;
+            border-left: 5px solid var(--primary);
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .question-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(124, 58, 237, 0.03) 0%, rgba(91, 33, 182, 0.03) 100%);
+            z-index: -1;
+        }
+        
+        .question-container:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .question-text {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--dark);
+            line-height: 1.5;
+        }
+        
+        .options-container {
+            display: grid;
+            gap: 12px;
+        }
+        
+        .option {
+            padding: 18px 20px;
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 1.05rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .option::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: var(--gradient);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s ease;
+        }
+        
+        .option:hover {
+            border-color: var(--primary);
+            background: #f0f7ff;
+            transform: translateY(-2px);
+        }
+        
+        .option:hover::before {
+            transform: scaleX(1);
+        }
+        
+        .option.selected {
+            border-color: var(--primary);
+            background: #e1f0ff;
+            box-shadow: 0 3px 10px rgba(124, 58, 237, 0.15);
+            transform: translateY(-2px);
+        }
+        
+        .option.selected::before {
+            transform: scaleX(1);
+        }
+        
+        .timer {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 25px 0;
+            padding: 25px;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            font-family: 'Montserrat', sans-serif;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .timer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: var(--gradient);
+        }
+        
+        .timer.warning {
+            color: var(--danger);
+            animation: pulseTimer 1s infinite;
+        }
+        
+        @keyframes pulseTimer {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+        
+        .progress-container {
+            margin: 25px 0;
+        }
+        
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+            color: #64748b;
+        }
+        
+        .progress-bar {
+            height: 10px;
+            background: #e2e8f0;
+            border-radius: 5px;
+            overflow: hidden;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .progress {
+            height: 100%;
+            background: var(--gradient);
+            width: 0%;
+            transition: width 0.5s;
+            border-radius: 5px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .progress::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            animation: shimmer 2s infinite;
+        }
+        
+        .result-container {
+            text-align: center;
+            padding: 30px;
+        }
+        
+        .score {
+            font-size: 5rem;
+            font-weight: 700;
+            margin: 30px 0;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            font-family: 'Montserrat', sans-serif;
+            animation: scoreReveal 1.5s ease-out;
+        }
+        
+        @keyframes scoreReveal {
+            0% { 
+                transform: scale(0.5);
+                opacity: 0;
+            }
+            70% { 
+                transform: scale(1.1);
+            }
+            100% { 
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        
+        .score-text {
+            font-size: 1.5rem;
+            margin-bottom: 40px;
+            color: var(--dark);
+        }
+        
+        .review-container {
+            text-align: left;
+            margin-top: 40px;
+        }
+        
+        .review-item {
+            margin-bottom: 25px;
+            padding: 20px;
+            border-radius: var(--border-radius);
+            background: white;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            animation: slideInUp 0.5s ease-out;
+        }
+        
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .review-item:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .correct {
+            border-left: 5px solid var(--success);
+        }
+        
+        .incorrect {
+            border-left: 5px solid var(--danger);
+        }
+        
+        .user-answer {
+            font-weight: 600;
+            margin-top: 10px;
+            color: var(--dark);
+        }
+        
+        .correct-answer {
+            font-weight: 600;
+            margin-top: 10px;
+            color: var(--success);
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+        
+        /* Advanced Warning Popups */
+        .fullscreen-warning {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            color: white;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            flex-direction: column;
+            text-align: center;
+            padding: 30px;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .fullscreen-warning-content {
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+            backdrop-filter: blur(20px);
+            border-radius: var(--border-radius);
+            padding: 40px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+            animation: modalSlideIn 0.5s ease-out;
+        }
+        
+        .fullscreen-warning-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: var(--gradient);
+        }
+        
+        .fullscreen-warning h2 {
+            color: white;
+            margin-bottom: 20px;
+            font-size: 2.5rem;
+        }
+        
+        .fullscreen-warning p {
+            color: #f8f9fa;
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+        }
+        
+        .access-status {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            gap: 15px;
+        }
+        
+        .status-item {
+            text-align: center;
+            flex: 1;
+            padding: 20px;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+        
+        .status-item:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .status-icon {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            gap: 15px;
+        }
+        
+        .permission-help {
+            background: #fff9e6;
+            border: 1px solid #ffeaa7;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-top: 25px;
+            transition: var(--transition);
+        }
+        
+        .permission-help:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow);
+        }
+        
+        .permission-help h3 {
+            color: #856404;
+            margin-bottom: 15px;
+        }
+        
+        .permission-help ul {
+            padding-left: 25px;
+            color: #856404;
+        }
+        
+        .permission-help li {
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+        
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            display: none;
+            border-left: 5px solid #f5c6cb;
+            animation: shake 0.5s;
+        }
+        
+        .camera-preview {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 220px;
+            height: 165px;
+            border: 3px solid var(--primary);
+            border-radius: var(--border-radius);
+            background: #000;
+            z-index: 999;
+            display: none;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            transition: var(--transition);
+            animation: cameraSlideIn 0.5s ease-out;
+        }
+        
+        @keyframes cameraSlideIn {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .camera-preview:hover {
+            transform: scale(1.05);
+        }
+        
+        .camera-preview video {
+            width: 100%;
+            height: 100%;
+            border-radius: 12px;
+            object-fit: cover;
+        }
+        
+        .monitoring-indicators {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            padding: 25px;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            animation: fadeIn 1s ease;
+        }
+        
+        .indicator {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: var(--transition);
+            position: relative;
+        }
+        
+        .indicator:hover {
+            transform: translateY(-3px);
+        }
+        
+        .indicator-icon {
+            font-size: 2rem;
+            margin-bottom: 8px;
+            position: relative;
+        }
+        
+        .indicator.active {
+            color: var(--success);
+        }
+        
+        .indicator.inactive {
+            color: var(--danger);
+        }
+        
+        .indicator.warning {
+            color: var(--warning);
+            animation: pulse 2s infinite;
+        }
+        
+        .indicator.alert {
+            color: var(--danger);
+            animation: shake 0.5s infinite;
+        }
+        
+        .question-counter {
+            text-align: center;
+            font-weight: 600;
+            color: #64748b;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+        
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 20px;
+            border-radius: var(--border-radius);
+            margin: 20px 0;
+            text-align: center;
+            font-size: 1.3rem;
+            font-weight: 600;
+            border-left: 5px solid #c3e6cb;
+            display: none;
+            animation: fadeIn 0.8s ease;
+        }
+        
+        .completion-message {
+            background: #d1ecf1;
+            color: #0c5460;
+            padding: 25px;
+            border-radius: var(--border-radius);
+            margin: 30px 0;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: 600;
+            border-left: 5px solid #bee5eb;
+            animation: fadeIn 1s ease;
+        }
+        
+        .admin-panel {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 25px;
+            margin: 25px 0;
+            border-left: 5px solid #8b5cf6;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+        
+        .admin-panel:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .admin-panel h3 {
+            color: #8b5cf6;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .admin-info {
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .admin-info p {
+            text-align: left;
+            margin-bottom: 10px;
+        }
+        
+        .admin-score {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #8b5cf6;
+            text-align: center;
+            margin: 15px 0;
+        }
+        
+        .admin-access {
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .admin-access p {
+            margin-bottom: 15px;
+            color: var(--dark);
+        }
+        
+        /* Tab switching warning */
+        .tab-switch-warning {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            color: white;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1001;
+            flex-direction: column;
+            text-align: center;
+            padding: 30px;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .tab-switch-warning-content {
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+            backdrop-filter: blur(20px);
+            border-radius: var(--border-radius);
+            padding: 40px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+            animation: modalSlideIn 0.5s ease-out;
+        }
+        
+        .tab-switch-warning-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: var(--warning);
+        }
+        
+        .tab-switch-warning h2 {
+            color: white;
+            margin-bottom: 20px;
+            font-size: 2.5rem;
+        }
+        
+        .tab-switch-warning p {
+            color: #f8f9fa;
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+        }
+        
+        .warning-count {
+            font-size: 4rem;
+            font-weight: 700;
+            color: var(--danger);
+            margin: 20px 0;
+            animation: pulse 1s infinite;
+        }
+        
+        /* Object detection warning */
+        .object-detection-warning {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--danger);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            z-index: 1002;
+            display: none;
+            animation: slideDown 0.5s ease, shake 0.5s;
+            font-weight: 600;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        @keyframes slideDown {
+            from { top: -100px; opacity: 0; }
+            to { top: 20px; opacity: 1; }
+        }
+        
+        /* Auto termination warning */
+        .auto-termination-warning {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            color: white;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1003;
+            flex-direction: column;
+            text-align: center;
+            padding: 30px;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .auto-termination-warning-content {
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+            backdrop-filter: blur(20px);
+            border-radius: var(--border-radius);
+            padding: 40px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+            animation: modalSlideIn 0.5s ease-out;
+        }
+        
+        .auto-termination-warning-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: var(--danger);
+        }
+        
+        .auto-termination-warning h2 {
+            color: white;
+            margin-bottom: 20px;
+            font-size: 2.5rem;
+        }
+        
+        .auto-termination-warning p {
+            color: #f8f9fa;
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+        }
+        
+        .termination-countdown {
+            font-size: 4rem;
+            font-weight: 700;
+            color: var(--danger);
+            margin: 20px 0;
+            animation: pulse 1s infinite;
+        }
+        
+        /* Fullscreen Exit Warning */
+        .fullscreen-exit-warning {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            color: white;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1004;
+            flex-direction: column;
+            text-align: center;
+            padding: 30px;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .fullscreen-exit-warning-content {
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+            backdrop-filter: blur(20px);
+            border-radius: var(--border-radius);
+            padding: 40px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+            animation: modalSlideIn 0.5s ease-out;
+        }
+        
+        .fullscreen-exit-warning-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: var(--warning);
+        }
+        
+        .fullscreen-exit-warning h2 {
+            color: white;
+            margin-bottom: 20px;
+            font-size: 2.5rem;
+        }
+        
+        .fullscreen-exit-warning p {
+            color: #f8f9fa;
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+        }
+        
+        .fullscreen-exit-count {
+            font-size: 4rem;
+            font-weight: 700;
+            color: var(--warning);
+            margin: 20px 0;
+            animation: pulse 1s infinite;
+        }
+        
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .form-row .form-group {
+            flex: 1;
+        }
+        
+        /* Admin Dashboard Styles */
+        .admin-dashboard {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 25px;
+            margin: 25px 0;
+            box-shadow: var(--shadow);
+        }
+        
+        .candidate-list {
+            margin-top: 20px;
+        }
+        
+        .candidate-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background: #f8fafc;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            transition: var(--transition);
+            animation: slideInUp 0.5s ease-out;
+        }
+        
+        .candidate-item:hover {
+            background: #f1f5f9;
+            transform: translateY(-3px);
+            box-shadow: var(--shadow);
+        }
+        
+        .candidate-info {
+            flex: 1;
+        }
+        
+        .candidate-name {
+            font-weight: 600;
+            color: var(--primary);
+            font-size: 1.1rem;
+        }
+        
+        .candidate-details {
+            font-size: 0.95rem;
+            color: #64748b;
+        }
+        
+        .candidate-score {
+            font-weight: 700;
+            font-size: 1.3rem;
+            color: var(--primary);
+            margin-right: 20px;
+        }
+        
+        .view-details-btn {
+            background: var(--gradient);
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+            box-shadow: 0 4px 10px rgba(124, 58, 237, 0.3);
+        }
+        
+        .view-details-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(124, 58, 237, 0.4);
+        }
+        
+        .delete-candidate-btn {
+            background: var(--danger);
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+            box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3);
+            margin-left: 10px;
+        }
+        
+        .delete-candidate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(239, 68, 68, 0.4);
+            background: #dc2626;
+        }
+        
+        .candidate-details-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1003;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 30px;
+            width: 90%;
+            max-width: 700px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            animation: modalSlideIn 0.5s ease-out;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .modal-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--primary);
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            cursor: pointer;
+            color: #64748b;
+            transition: var(--transition);
+        }
+        
+        .close-modal:hover {
+            color: var(--danger);
+            transform: rotate(90deg);
+        }
+        
+        .modal-body {
+            margin-bottom: 20px;
+        }
+        
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        
+        /* NEW FEATURES */
+        .face-detection-status {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: white;
+            padding: 15px 20px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            z-index: 1000;
+            display: none;
+            animation: fadeIn 0.5s ease;
+            border-left: 5px solid var(--success);
+            font-weight: 600;
+        }
+        
+        .face-detection-status.warning {
+            border-left-color: var(--warning);
+            animation: pulseWarning 2s infinite;
+        }
+        
+        .face-detection-status.danger {
+            border-left-color: var(--danger);
+            animation: pulseDanger 2s infinite;
+        }
+        
+        .object-detection-status {
+            position: fixed;
+            top: 80px;
+            left: 20px;
+            background: white;
+            padding: 15px 20px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            z-index: 1000;
+            display: none;
+            animation: fadeIn 0.5s ease;
+            border-left: 5px solid var(--success);
+            font-weight: 600;
+        }
+        
+        .object-detection-status.warning {
+            border-left-color: var(--warning);
+            animation: pulseWarning 2s infinite;
+        }
+        
+        .object-detection-status.danger {
+            border-left-color: var(--danger);
+            animation: pulseDanger 2s infinite;
+        }
+        
+        .face-detection-warning {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 30px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            z-index: 1004;
+            display: none;
+            animation: fadeIn 0.5s ease;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .face-detection-warning h3 {
+            color: white;
+            margin-bottom: 15px;
+        }
+        
+        .face-detection-warning p {
+            color: #f8f9fa;
+            margin-bottom: 20px;
+        }
+        
+        .face-detection-countdown {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--warning);
+            margin: 15px 0;
+            animation: pulse 1s infinite;
+        }
+        
+        .camera-preview-enhanced canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 12px;
+        }
+        
+        .monitoring-dashboard {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: var(--shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .monitoring-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .monitoring-label {
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        .monitoring-value {
+            font-weight: 700;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+        
+        .monitoring-value.success {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+        
+        .monitoring-value.warning {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+        }
+        
+        .monitoring-value.danger {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+        
+        .warning-counter {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 15px 20px;
+            border-radius: var(--border-radius);
+            z-index: 1000;
+            display: none;
+            animation: fadeIn 0.5s ease;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            font-weight: 600;
+        }
+        
+        .warning-counter .count {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--danger);
+            margin-left: 10px;
+        }
+        
+        .face-not-present-warning {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--warning);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            z-index: 1002;
+            display: none;
+            animation: slideDown 0.5s ease, shake 0.5s;
+            font-weight: 600;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+        }
+        
+        .timer-container {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 25px 0;
+        }
+        
+        .circular-progress {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            background: conic-gradient(var(--primary) 0deg, #e2e8f0 0deg);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .circular-progress::before {
+            content: '';
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: white;
+        }
+        
+        .timer-value {
+            position: relative;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            font-family: 'Montserrat', sans-serif;
+            z-index: 1;
+        }
+        
+        .timer.warning .timer-value {
+            color: var(--danger);
+            animation: pulseTimer 1s infinite;
+        }
+        
+        .progress-bar-enhanced {
+            height: 12px;
+            background: #e2e8f0;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        
+        .progress-enhanced {
+            height: 100%;
+            background: var(--gradient);
+            width: 0%;
+            transition: width 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .progress-enhanced:after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            animation: shimmer 2s infinite;
+        }
+        
+        .score-enhanced {
+            font-size: 5rem;
+            font-weight: 700;
+            margin: 30px 0;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            font-family: 'Montserrat', sans-serif;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .score-enhanced:after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: var(--gradient);
+            border-radius: 5px;
+            transform: scaleX(0);
+            transform-origin: left;
+            animation: expandLine 1.5s 0.5s forwards;
+        }
+        
+        .indicator-enhanced {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: var(--transition);
+            position: relative;
+            padding: 15px;
+            border-radius: 12px;
+            background: white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .indicator-enhanced:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .indicator-enhanced.active {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+        
+        .indicator-enhanced.inactive {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+        
+        .indicator-enhanced.warning {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+            animation: pulseWarning 2s infinite;
+        }
+        
+        .camera-preview-enhanced {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 220px;
+            height: 165px;
+            border: 3px solid var(--primary);
+            border-radius: var(--border-radius);
+            background: #000;
+            z-index: 999;
+            display: none;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            transition: var(--transition);
+            animation: cameraSlideIn 0.5s ease-out;
+        }
+        
+        .camera-preview-enhanced:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(124, 58, 237, 0.2) 0%, rgba(91, 33, 182, 0.2) 100%);
+            z-index: 1;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .camera-preview-enhanced:hover:before {
+            opacity: 1;
+        }
+        
+        .camera-preview-enhanced video {
+            width: 100%;
+            height: 100%;
+            border-radius: 12px;
+            object-fit: cover;
+        }
+        
+        .confirmation-dialog {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1005;
+        }
+        
+        .confirmation-content {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 30px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            animation: modalSlideIn 0.3s ease-out;
+        }
+        
+        .confirmation-content h3 {
+            color: var(--danger);
+            margin-bottom: 15px;
+        }
+        
+        .confirmation-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 25px;
+        }
+        
+        .demo-info {
+            background: #f0f9ff;
+            border-left: 5px solid var(--accent);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+        
+        .demo-info h4 {
+            color: var(--accent);
+            margin-bottom: 10px;
+        }
+        
+        .demo-info ul {
+            padding-left: 20px;
+        }
+        
+        .demo-info li {
+            margin-bottom: 8px;
+            color: #475569;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                border-radius: 12px;
+            }
+            
+            .header {
+                padding: 25px;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            h2 {
+                font-size: 1.8rem;
+            }
+            
+            .screen {
+                padding: 25px;
+            }
+            
+            .access-status {
+                flex-direction: column;
+            }
+            
+            .controls {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .controls .btn {
+                width: 100%;
+            }
+            
+            .camera-preview {
+                width: 150px;
+                height: 112px;
+                top: 10px;
+                right: 10px;
+            }
+            
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+            
+            .candidate-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .view-details-btn {
+                background: var(--gradient);
+                color: white;
+                border: none;
+                padding: 10px 18px;
+                border-radius: 8px;
+                cursor: pointer;
+                font-weight: 600;
+                transition: var(--transition);
+                box-shadow: 0 4px 10px rgba(124, 58, 237, 0.3);
+            }
+            
+            .view-details-btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 15px rgba(124, 58, 237, 0.4);
+            }
+            
+            .candidate-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .candidate-score {
+                margin: 10px 0;
+            }
+            
+            .bg-element {
+                display: none;
+            }
+            
+            .object-detection-warning {
+                width: 90%;
+                font-size: 0.9rem;
+            }
+            
+            .timer-container {
+                margin: 15px 0;
+            }
+            
+            .circular-progress {
+                width: 140px;
+                height: 140px;
+            }
+            
+            .circular-progress::before {
+                width: 110px;
+                height: 110px;
+            }
+            
+            .timer-value {
+                font-size: 2rem;
+            }
+            
+            .face-detection-status,
+            .object-detection-status {
+                top: 10px;
+                left: 10px;
+                right: 10px;
+                width: auto;
+            }
+            
+            .object-detection-status {
+                top: 70px;
+            }
+            
+            .warning-counter {
+                bottom: 10px;
+                right: 10px;
+                left: 10px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- HTML structure remains exactly the same as provided -->
+    <!-- ... HTML structure remains unchanged ... -->
+
+<div class="bg-elements">
+        <div class="bg-element"></div>
+        <div class="bg-element"></div>
+        <div class="bg-element"></div>
+        <div class="bg-element"></div>
+    </div>
+    
+    <div class="glow"></div>
+    <div class="glow"></div>
+    <div class="glow"></div>
+    
+    <div class="particles" id="particles"></div>
+    
+    <div class="container">
+        <div class="header">
+            <div class="header-content">
+                <h1><i class="fas fa-shield-alt"></i> Secure Assessment Platform</h1>
+                <p class="subtitle">Advanced monitoring and proctoring for reliable evaluation</p>
+            </div>
+        </div>
+        
+        <!-- Registration Screen -->
+        <div id="registration-screen" class="screen active">
+            <h2>Candidate Registration</h2>
+            <p>Please provide your details to begin the secure assessment</p>
+            
+            <div class="card">
+                <form id="registration-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="fullName"><i class="fas fa-user"></i> Full Name</label>
+                            <input type="text" id="fullName" required placeholder="Enter your full name">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="email"><i class="fas fa-envelope"></i> Email Address</label>
+                            <input type="email" id="email" required placeholder="Enter your email">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="phone"><i class="fas fa-phone"></i> Phone Number</label>
+                            <input type="tel" id="phone" required placeholder="Enter your phone number">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="domain"><i class="fas fa-cogs"></i> Select Your Domain</label>
+                            <select id="domain" required>
+                                <option value="">Choose your domain</option>
+                                <option value="cse">Computer Science (CSE)</option>
+                                <option value="ece">Electronics (ECE)</option>
+                                <option value="mechanical">Mechanical Engineering</option>
+                                <option value="civil">Civil Engineering</option>
+                                <option value="electrical">Electrical Engineering</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-block btn-3d">Proceed to Assessment <i class="fas fa-arrow-right"></i></button>
+                </form>
+            </div>
+            
+            <!-- Admin Access Section -->
+            <div class="card">
+                <h3 class="card-title"><i class="fas fa-user-shield"></i> Admin Access</h3>
+                <p>Administrators can access candidate results by providing admin credentials</p>
+                
+                <div class="form-group">
+                    <label for="admin-email">Admin Email</label>
+                    <input type="email" id="admin-email" placeholder="Enter admin email">
+                </div>
+                <div class="form-group">
+                    <label for="admin-password">Admin Password</label>
+                    <input type="password" id="admin-password" placeholder="Enter admin password">
+                </div>
+                <button class="btn btn-admin btn-block btn-3d" id="admin-access">Access Admin Dashboard</button>
+            </div>
+        </div>
+        
+        <!-- Permissions Screen -->
+        <div id="permissions-screen" class="screen">
+            <h2>Security Requirements</h2>
+            <p>To ensure assessment integrity, the following security measures are required:</p>
+            
+            <div class="card">
+                <div class="permission-item">
+                    <div class="permission-icon"><i class="fas fa-expand"></i></div>
+                    <div class="permission-text">
+                        <h3>Full Screen Mode</h3>
+                        <p>Prevents switching to other applications during the test</p>
+                    </div>
+                    <div class="permission-status pending" id="fullscreen-status">Pending</div>
+                </div>
+                
+                <div class="permission-item">
+                    <div class="permission-icon"><i class="fas fa-microphone"></i></div>
+                    <div class="permission-text">
+                        <h3>Microphone Access</h3>
+                        <p>To monitor the testing environment for suspicious sounds</p>
+                    </div>
+                    <div class="permission-status pending" id="microphone-status">Pending</div>
+                </div>
+                
+                <div class="permission-item">
+                    <div class="permission-icon"><i class="fas fa-camera"></i></div>
+                    <div class="permission-text">
+                        <h3>Camera Access</h3>
+                        <p>To verify test-taker identity and monitor for suspicious objects</p>
+                    </div>
+                    <div class="permission-status pending" id="camera-status">Pending</div>
+                </div>
+            </div>
+            
+            <div class="error-message" id="permission-error">
+                <i class="fas fa-exclamation-triangle"></i> Some permissions were denied. Please grant all permissions to continue with the assessment.
+            </div>
+            
+            <div class="permission-help">
+                <h3><i class="fas fa-info-circle"></i> Security Assistance</h3>
+                <ul>
+                    <li>Ensure you're using a secure connection (HTTPS)</li>
+                    <li>Check if your browser allows pop-ups for this site</li>
+                    <li>If permissions are blocked, look for camera/microphone icons in your address bar</li>
+                    <li>Refresh the page if permissions don't work initially</li>
+                </ul>
+            </div>
+            
+            <p>Once all permissions are granted, the test will begin automatically.</p>
+            
+            <div class="controls">
+                <button class="btn btn-warning btn-3d" id="back-to-registration"><i class="fas fa-arrow-left"></i> Back</button>
+                <button class="btn btn-3d" id="request-permissions"><i class="fas fa-check"></i> Grant Permissions</button>
+            </div>
+        </div>
+        
+        <!-- Quiz Screen -->
+        <div id="quiz-screen" class="screen">
+            <h2 id="domain-title"><i class="fas fa-book-open"></i> Domain Assessment</h2>
+            
+            <!-- Demo Information -->
+            <div class="demo-info">
+                <h4><i class="fas fa-info-circle"></i> System Monitoring Active</h4>
+                <ul>
+                    <li><strong>Face Detection:</strong> System automatically detects if face is visible in camera</li>
+                    <li><strong>Object Detection:</strong> System automatically detects suspicious objects (phones)</li>
+                    <li><strong>Warning System:</strong> 2 warnings maximum before test termination</li>
+                    <li><strong>Test Duration:</strong> 30 minutes total time</li>
+                </ul>
+            </div>
+            
+            <div class="monitoring-dashboard">
+                <div class="monitoring-item">
+                    <span class="monitoring-label">Face Detection:</span>
+                    <span class="monitoring-value success" id="face-status-indicator">Active</span>
+                </div>
+                <div class="monitoring-item">
+                    <span class="monitoring-label">Object Detection:</span>
+                    <span class="monitoring-value success" id="object-status-indicator">Clear</span>
+                </div>
+                <div class="monitoring-item">
+                    <span class="monitoring-label">Face Warnings:</span>
+                    <span class="monitoring-value success" id="face-warning-indicator">0/2</span>
+                </div>
+                <div class="monitoring-item">
+                    <span class="monitoring-label">Object Warnings:</span>
+                    <span class="monitoring-value success" id="object-warning-indicator">0/2</span>
+                </div>
+            </div>
+            
+            <div class="monitoring-indicators">
+                <div class="indicator-enhanced" id="fullscreen-indicator">
+                    <div class="indicator-icon"><i class="fas fa-expand"></i></div>
+                    <span>Full Screen</span>
+                </div>
+                <div class="indicator-enhanced" id="microphone-indicator">
+                    <div class="indicator-icon"><i class="fas fa-microphone"></i></div>
+                    <span>Microphone</span>
+                </div>
+                <div class="indicator-enhanced" id="camera-indicator">
+                    <div class="indicator-icon"><i class="fas fa-camera"></i></div>
+                    <span>Camera</span>
+                </div>
+                <div class="indicator-enhanced" id="activity-indicator">
+                    <div class="indicator-icon"><i class="fas fa-shield-alt"></i></div>
+                    <span>Activity</span>
+                </div>
+            </div>
+            
+            <div class="timer-container">
+                <div class="circular-progress" id="circular-progress">
+                    <div class="timer-value" id="timer-value">30:00</div>
+                </div>
+            </div>
+            
+            <div class="progress-container">
+                <div class="progress-info">
+                    <span>Progress</span>
+                    <span id="progress-percentage">0%</span>
+                </div>
+                <div class="progress-bar-enhanced">
+                    <div class="progress-enhanced" id="progress"></div>
+                </div>
+            </div>
+            
+            <div class="question-counter" id="question-counter">Question 1 of 10</div>
+            
+            <div id="question-area">
+                <!-- Questions will be dynamically inserted here -->
+            </div>
+            
+            <div class="controls">
+                <button class="btn btn-3d" id="prev-question"><i class="fas fa-chevron-left"></i> Previous</button>
+                <button class="btn btn-3d" id="next-question">Next <i class="fas fa-chevron-right"></i></button>
+                <button class="btn btn-danger btn-3d" id="submit-quiz"><i class="fas fa-paper-plane"></i> Submit Test</button>
+            </div>
+        </div>
+        
+        <!-- Results Screen -->
+        <div id="results-screen" class="screen">
+            <h2><i class="fas fa-chart-line"></i> Assessment Results</h2>
+            
+            <div class="completion-message">
+                <i class="fas fa-check-circle"></i> You have successfully completed the test!
+            </div>
+            
+            <div class="result-container">
+                <!-- Score display removed - only show assessment completed -->
+                <p class="score-text">Your assessment has been completed and submitted successfully.</p>
+                <p class="score-text">Your results have been recorded and will be reviewed by the administrator.</p>
+
+                <!-- Added element so JS no longer errors when updating result messages -->
+                <div id="score-message" class="score-text" style="margin-bottom: 20px;"></div>
+
+                <div class="controls">
+                    <button class="btn btn-3d" id="finish-test"><i class="fas fa-home"></i> Finish</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Admin Dashboard Screen -->
+        <div id="admin-dashboard" class="screen">
+            <h2><i class="fas fa-user-shield"></i> Admin Dashboard</h2>
+            <p>View candidate scores and assessment results</p>
+            
+            <div class="admin-dashboard">
+                <h3><i class="fas fa-list"></i> Candidate Results</h3>
+                <div class="candidate-list" id="candidate-results">
+                    <!-- Candidate results will be dynamically inserted here -->
+                </div>
+            </div>
+            
+            <div class="controls">
+                <button class="btn btn-block btn-3d" id="back-to-registration-from-admin"><i class="fas fa-arrow-left"></i> Back to Registration</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Camera Preview -->
+    <div class="camera-preview-enhanced" id="camera-preview">
+        <video id="camera-feed" autoplay muted></video>
+        <canvas id="face-detection-canvas"></canvas>
+    </div>
+
+    <!-- Fullscreen Warning -->
+    <div id="fullscreen-warning" class="fullscreen-warning">
+        <div class="fullscreen-warning-content">
+            <h2><i class="fas fa-expand"></i> Full Screen Mode Required</h2>
+            <p>Please allow full screen mode to continue with the assessment.</p>
+            <button class="btn btn-3d" id="enable-fullscreen">Enable Full Screen</button>
+        </div>
+    </div>
+
+    <!-- Tab Switching Warning -->
+    <div id="tab-switch-warning" class="tab-switch-warning">
+        <div class="tab-switch-warning-content">
+            <h2><i class="fas fa-exclamation-triangle"></i> Suspicious Activity Detected</h2>
+            <p>You have switched tabs/windows during the assessment. This is not allowed.</p>
+            <div class="warning-count" id="warning-count">1</div>
+            <p>Multiple violations may result in test disqualification.</p>
+            <button class="btn btn-3d" id="acknowledge-warning">Acknowledge</button>
+        </div>
+    </div>
+
+    <!-- Object Detection Warning -->
+    <div id="object-detection-warning" class="object-detection-warning">
+        <i class="fas fa-exclamation-circle"></i> Suspicious object detected in camera view!
+    </div>
+    
+    <!-- Face Not Present Warning -->
+    <div id="face-not-present-warning" class="face-not-present-warning">
+        <i class="fas fa-user-slash"></i> Face not detected! Please position yourself properly.
+    </div>
+
+    <!-- Auto Termination Warning -->
+    <div id="auto-termination-warning" class="auto-termination-warning">
+        <div class="auto-termination-warning-content">
+            <h2><i class="fas fa-ban"></i> Test Terminated</h2>
+            <p>Your test has been terminated due to multiple violations of test rules.</p>
+            <div class="termination-countdown" id="termination-countdown">3</div>
+            <p>You will be redirected to the results page shortly.</p>
+        </div>
+    </div>
+
+    <!-- Fullscreen Exit Warning -->
+    <div id="fullscreen-exit-warning" class="fullscreen-exit-warning">
+        <div class="fullscreen-exit-warning-content">
+            <h2><i class="fas fa-exclamation-circle"></i> Full Screen Mode Exited</h2>
+            <p>You have exited full screen mode. This is considered suspicious activity.</p>
+            <div class="fullscreen-exit-count" id="fullscreen-exit-count">3</div>
+            <p>Please return to full screen mode immediately to continue the test.</p>
+            <button class="btn btn-3d" id="return-fullscreen">Return to Full Screen</button>
+        </div>
+    </div>
+    
+    <!-- Face Detection Warning -->
+    <div id="face-detection-warning" class="face-detection-warning">
+        <h3><i class="fas fa-user-slash"></i> Face Not Detected</h3>
+        <p>Please position yourself clearly in front of the camera.</p>
+        <div class="face-detection-countdown" id="face-detection-countdown">5</div>
+        <p>Test will be terminated if face is not detected.</p>
+    </div>
+
+    <!-- Candidate Details Modal -->
+    <div class="candidate-details-modal" id="candidate-details-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Candidate Details</h3>
+                <button class="close-modal" id="close-modal">&times;</button>
+            </div>
+            <div class="modal-body" id="modal-body">
+                <!-- Candidate details will be inserted here -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger" id="delete-candidate-btn">Delete Candidate</button>
+                <button class="btn btn-3d" id="close-modal-btn">Close</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Confirmation Dialog for Delete -->
+    <div class="confirmation-dialog" id="confirmation-dialog">
+        <div class="confirmation-content">
+            <h3><i class="fas fa-exclamation-triangle"></i> Confirm Delete</h3>
+            <p>Are you sure you want to delete this candidate's record? This action cannot be undone.</p>
+            <div class="confirmation-buttons">
+                <button class="btn btn-danger" id="confirm-delete">Yes, Delete</button>
+                <button class="btn btn-3d" id="cancel-delete">Cancel</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Face Detection Status -->
+    <div id="face-detection-status" class="face-detection-status">
+        <i class="fas fa-user-check"></i> Face Detected
+    </div>
+    
+    <!-- Object Detection Status -->
+    <div id="object-detection-status" class="object-detection-status">
+        <i class="fas fa-check-circle"></i> No Suspicious Objects
+    </div>
+    
+    <!-- Warning Counter -->
+    <div id="warning-counter" class="warning-counter">
+        <i class="fas fa-exclamation-triangle"></i> Face Warnings: <span class="count" id="warning-count-display">0</span>/2
+    </div>
+
+
+    
+    <script>
+        // DOM Elements
+        const registrationScreen = document.getElementById('registration-screen');
+        const permissionsScreen = document.getElementById('permissions-screen');
+        const quizScreen = document.getElementById('quiz-screen');
+        const resultsScreen = document.getElementById('results-screen');
+        const adminDashboard = document.getElementById('admin-dashboard');
+        
+        const registrationForm = document.getElementById('registration-form');
+        const adminAccessBtn = document.getElementById('admin-access');
+        const fullscreenWarning = document.getElementById('fullscreen-warning');
+        const permissionError = document.getElementById('permission-error');
+        const domainTitle = document.getElementById('domain-title');
+        const questionCounter = document.getElementById('question-counter');
+        const candidateResults = document.getElementById('candidate-results');
+        const progressPercentage = document.getElementById('progress-percentage');
+        const scoreMessage = document.getElementById('score-message');
+        const finishTestBtn = document.getElementById('finish-test');
+        
+        // Status elements
+        const fullscreenStatus = document.getElementById('fullscreen-status');
+        const microphoneStatus = document.getElementById('microphone-status');
+        const cameraStatus = document.getElementById('camera-status');
+        
+        // Monitoring indicators
+        const fullscreenIndicator = document.getElementById('fullscreen-indicator');
+        const microphoneIndicator = document.getElementById('microphone-indicator');
+        const cameraIndicator = document.getElementById('camera-indicator');
+        const activityIndicator = document.getElementById('activity-indicator');
+        
+        // Monitoring dashboard elements
+        const faceStatusIndicator = document.getElementById('face-status-indicator');
+        const objectStatusIndicator = document.getElementById('object-status-indicator');
+        const faceWarningIndicator = document.getElementById('face-warning-indicator');
+        const objectWarningIndicator = document.getElementById('object-warning-indicator');
+        
+        // Camera preview
+        const cameraPreview = document.getElementById('camera-preview');
+        const cameraFeed = document.getElementById('camera-feed');
+        const faceDetectionCanvas = document.getElementById('face-detection-canvas');
+        
+        // Buttons
+        const backToRegistrationBtn = document.getElementById('back-to-registration');
+        const requestPermissionsBtn = document.getElementById('request-permissions');
+        const enableFullscreenBtn = document.getElementById('enable-fullscreen');
+        const prevQuestionBtn = document.getElementById('prev-question');
+        const nextQuestionBtn = document.getElementById('next-question');
+        const submitQuizBtn = document.getElementById('submit-quiz');
+        const backToRegistrationFromAdminBtn = document.getElementById('back-to-registration-from-admin');
+        const acknowledgeWarningBtn = document.getElementById('acknowledge-warning');
+        const returnFullscreenBtn = document.getElementById('return-fullscreen');
+        
+        // Quiz elements
+        const timerValue = document.getElementById('timer-value');
+        const circularProgress = document.getElementById('circular-progress');
+        const progressElement = document.getElementById('progress');
+        const questionArea = document.getElementById('question-area');
+        
+        // Warning elements
+        const tabSwitchWarning = document.getElementById('tab-switch-warning');
+        const warningCountElement = document.getElementById('warning-count');
+        const objectDetectionWarning = document.getElementById('object-detection-warning');
+        const faceNotPresentWarning = document.getElementById('face-not-present-warning');
+        const autoTerminationWarning = document.getElementById('auto-termination-warning');
+        const terminationCountdownElement = document.getElementById('termination-countdown');
+        const fullscreenExitWarning = document.getElementById('fullscreen-exit-warning');
+        const fullscreenExitCountElement = document.getElementById('fullscreen-exit-count');
+        const faceDetectionWarning = document.getElementById('face-detection-warning');
+        const faceDetectionCountdown = document.getElementById('face-detection-countdown');
+        
+        // Face and Object Detection elements
+        const faceDetectionStatus = document.getElementById('face-detection-status');
+        const objectDetectionStatus = document.getElementById('object-detection-status');
+        const warningCounter = document.getElementById('warning-counter');
+        const warningCountDisplay = document.getElementById('warning-count-display');
+        
+        // Modal elements
+        const candidateDetailsModal = document.getElementById('candidate-details-modal');
+        const modalBody = document.getElementById('modal-body');
+        const closeModalBtn = document.getElementById('close-modal');
+        const closeModalBtn2 = document.getElementById('close-modal-btn');
+        const deleteCandidateBtn = document.getElementById('delete-candidate-btn');
+        const confirmationDialog = document.getElementById('confirmation-dialog');
+        const confirmDeleteBtn = document.getElementById('confirm-delete');
+        const cancelDeleteBtn = document.getElementById('cancel-delete');
+        
+        // Quiz state
+        let userDetails = {};
+        let currentDomain = '';
+        let currentQuestionIndex = 0;
+        let userAnswers = [];
+        let timer;
+        let timeLeft = 30 * 60; // 30 minutes in seconds
+        let permissionState = {
+            fullscreen: false,
+            microphone: false,
+            camera: false
+        };
+        
+        // Admin credentials
+        const ADMIN_EMAIL = "admin@assessment.com";
+        const ADMIN_PASSWORD = "admin123";
+        
+        // Tab switching detection
+        let tabSwitchCount = 0;
+        let isTabActive = true;
+        
+        // Fullscreen exit detection
+        let fullscreenExitCount = 0;
+        
+        // Face detection variables
+        let faceDetectionInterval;
+        let noFaceDetectionTime = 0;
+        let faceWarnings = 0;
+        let maxFaceWarnings = 2;
+        let faceDetectionContext;
+        let faceDetected = true;
+        let faceDetectionState = 'present';
+        let faceDetectionCycle = 0;
+        
+        // Object detection variables
+        let objectDetectionInterval;
+        let objectWarnings = 0;
+        let maxObjectWarnings = 2;
+        let objectDetectionCycle = 0;
+        let objectDetected = false;
+        
+        // Media streams
+        let cameraStream = null;
+        let microphoneStream = null;
+        
+        // Store candidate results in localStorage
+        let candidateResultsData = JSON.parse(localStorage.getItem('candidateResults')) || [];
+        
+        // For deletion
+        let currentCandidateToDelete = null;
+        
+        // Create particle animation
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                const left = Math.random() * 100;
+                const size = Math.random() * 3 + 1;
+                const duration = Math.random() * 20 + 10;
+                const delay = Math.random() * 5;
+                
+                particle.style.left = `${left}%`;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.animationDuration = `${duration}s`;
+                particle.style.animationDelay = `${delay}s`;
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
+        
+        // Question banks for different domains (10 questions each)
+        const questionBanks = {
+            cse: [
+                {
+                    question: "What does HTML stand for?",
+                    options: [
+                        "Hyper Text Markup Language",
+                        "High Tech Modern Language",
+                        "Hyper Transfer Markup Language",
+                        "Home Tool Markup Language"
+                    ],
+                    correct: 0
+                },
+                {
+                    question: "Which data structure uses LIFO (Last In First Out) principle?",
+                    options: [
+                        "Queue",
+                        "Stack",
+                        "Array",
+                        "Linked List"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "What is the time complexity of binary search?",
+                    options: [
+                        "O(1)",
+                        "O(n)",
+                        "O(log n)",
+                        "O(n²)"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "Which protocol is used for secure data transmission over the internet?",
+                    options: [
+                        "HTTP",
+                        "FTP",
+                        "HTTPS",
+                        "SMTP"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "What is the main purpose of an operating system?",
+                    options: [
+                        "To manage computer hardware and software resources",
+                        "To create documents",
+                        "To browse the internet",
+                        "To play games"
+                    ],
+                    correct: 0
+                },
+                {
+                    question: "Which of these is not a programming language?",
+                    options: [
+                        "Python",
+                        "Java",
+                        "HTML",
+                        "C++"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "What does SQL stand for?",
+                    options: [
+                        "Structured Query Language",
+                        "Simple Question Language",
+                        "System Query Logic",
+                        "Sequential Query Language"
+                    ],
+                    correct: 0
+                },
+                {
+                    question: "Which of these is a NoSQL database?",
+                    options: [
+                        "MySQL",
+                        "PostgreSQL",
+                        "MongoDB",
+                        "Oracle"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "What is the main advantage of using cloud computing?",
+                    options: [
+                        "Cost savings",
+                        "Scalability",
+                        "Security",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which algorithm is used for shortest path finding?",
+                    options: [
+                        "Bubble Sort",
+                        "Dijkstra's Algorithm",
+                        "Binary Search",
+                        "Quick Sort"
+                    ],
+                    correct: 1
+                }
+            ],
+            ece: [
+                {
+                    question: "What does VLSI stand for?",
+                    options: [
+                        "Very Large Scale Integration",
+                        "Variable Logic System Integration",
+                        "Voltage Level System Interface",
+                        "Visual Logic System Integration"
+                    ],
+                    correct: 0
+                },
+                {
+                    question: "Which component is used to store electric charge?",
+                    options: [
+                        "Resistor",
+                        "Capacitor",
+                        "Inductor",
+                        "Transistor"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "What is the unit of electrical resistance?",
+                    options: [
+                        "Volt",
+                        "Ampere",
+                        "Ohm",
+                        "Watt"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "Which semiconductor device is used for amplification?",
+                    options: [
+                        "Diode",
+                        "Transistor",
+                        "Capacitor",
+                        "Resistor"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "What does DSP stand for?",
+                    options: [
+                        "Digital Signal Processing",
+                        "Direct Signal Protocol",
+                        "Digital System Programming",
+                        "Data Signal Processing"
+                    ],
+                    correct: 0
+                },
+                {
+                    question: "Which modulation technique is used in WiFi?",
+                    options: [
+                        "AM",
+                        "FM",
+                        "QAM",
+                        "PM"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "What is the frequency range of human hearing?",
+                    options: [
+                        "20 Hz - 20 kHz",
+                        "1 Hz - 100 kHz",
+                        "100 Hz - 10 kHz",
+                        "10 Hz - 30 kHz"
+                    ],
+                    correct: 0
+                },
+                {
+                    question: "Which material is commonly used in semiconductors?",
+                    options: [
+                        "Copper",
+                        "Silicon",
+                        "Aluminum",
+                        "Gold"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "What does LED stand for?",
+                    options: [
+                        "Light Emitting Diode",
+                        "Low Energy Device",
+                        "Light Energy Detector",
+                        "Luminous Emission Device"
+                    ],
+                    correct: 0
+                },
+                {
+                    question: "Which circuit element opposes changes in current?",
+                    options: [
+                        "Resistor",
+                        "Capacitor",
+                        "Inductor",
+                        "Transistor"
+                    ],
+                    correct: 2
+                }
+            ],
+            mechanical: [
+                {
+                    question: "What is the SI unit of force?",
+                    options: [
+                        "Newton",
+                        "Joule",
+                        "Watt",
+                        "Pascal"
+                    ],
+                    correct: 0
+                },
+                {
+                    question: "Which law states that every action has an equal and opposite reaction?",
+                    options: [
+                        "Newton's First Law",
+                        "Newton's Second Law",
+                        "Newton's Third Law",
+                        "Law of Conservation of Energy"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "What does CAD stand for in engineering?",
+                    options: [
+                        "Computer-Aided Design",
+                        "Computer-Aided Drafting",
+                        "Computer-Aided Development",
+                        "Computer-Aided Documentation"
+                    ],
+                    correct: 0
+                },
+                {
+                    question: "Which material has the highest tensile strength?",
+                    options: [
+                        "Aluminum",
+                        "Copper",
+                        "Steel",
+                        "Brass"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "What is the study of fluids in motion called?",
+                    options: [
+                        "Thermodynamics",
+                        "Fluid Mechanics",
+                        "Solid Mechanics",
+                        "Kinematics"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which engine component converts reciprocating motion to rotational motion?",
+                    options: [
+                        "Piston",
+                        "Crankshaft",
+                        "Camshaft",
+                        "Cylinder"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "What does CNC stand for?",
+                    options: [
+                        "Computer Numerical Control",
+                        "Computerized Numerical Control",
+                        "Computer Network Control",
+                        "Centralized Numerical Control"
+                    ],
+                    correct: 0
+                },
+                {
+                    question: "Which heat transfer mode occurs through direct contact?",
+                    options: [
+                        "Conduction",
+                        "Convection",
+                        "Radiation",
+                        "Insulation"
+                    ],
+                    correct: 0
+                },
+                {
+                    question: "What is the unit of pressure?",
+                    options: [
+                        "Newton",
+                        "Pascal",
+                        "Joule",
+                        "Watt"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which gear type is used for intersecting shafts?",
+                    options: [
+                        "Spur Gear",
+                        "Helical Gear",
+                        "Bevel Gear",
+                        "Worm Gear"
+                    ],
+                    correct: 2
+                }
+            ],
+            civil: [
+                {
+                    question: "What does RCC stand for in construction?",
+                    options: [
+                        "Reinforced Concrete Cement",
+                        "Reinforced Cement Concrete",
+                        "Reinforced Concrete Construction",
+                        "Reinforced Cement Construction"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which test determines the compressive strength of concrete?",
+                    options: [
+                        "Slump Test",
+                        "Compression Test",
+                        "Tensile Test",
+                        "Flexural Test"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "What is the minimum curing period for concrete?",
+                    options: [
+                        "7 days",
+                        "14 days",
+                        "21 days",
+                        "28 days"
+                    ],
+                    correct: 0
+                },
+                {
+                    question: "Which foundation is used for weak soils?",
+                    options: [
+                        "Spread Footing",
+                        "Raft Foundation",
+                        "Pile Foundation",
+                        "Strip Foundation"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "What does BIM stand for?",
+                    options: [
+                        "Building Information Modeling",
+                        "Building Information Management",
+                        "Building Integrated Modeling",
+                        "Building Integrated Management"
+                    ],
+                    correct: 0
+                },
+                {
+                    question: "Which instrument is used to measure horizontal angles?",
+                    options: [
+                        "Theodolite",
+                        "Level",
+                        "Total Station",
+                        "Plumb Bob"
+                    ],
+                    correct: 0
+                },
+                {
+                    question: "What is the study of soil called?",
+                    options: [
+                        "Geology",
+                        "Geotechnical Engineering",
+                        "Hydrology",
+                        "Topography"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which beam is fixed at both ends?",
+                    options: [
+                        "Simply Supported Beam",
+                        "Cantilever Beam",
+                        "Fixed Beam",
+                        "Continuous Beam"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "What is the unit of measurement for cement?",
+                    options: [
+                        "Cubic Meter",
+                        "Kilogram",
+                        "Bag",
+                        "Liter"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "Which type of cement sets quickly?",
+                    options: [
+                        "Portland Cement",
+                        "Rapid Hardening Cement",
+                        "Low Heat Cement",
+                        "Sulfate Resisting Cement"
+                    ],
+                    correct: 1
+                }
+            ],
+            electrical: [
+                {
+                    question: "What is the unit of electric current?",
+                    options: [
+                        "Volt",
+                        "Ampere",
+                        "Ohm",
+                        "Watt"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which law states that voltage equals current times resistance?",
+                    options: [
+                        "Ohm's Law",
+                        "Kirchhoff's Law",
+                        "Faraday's Law",
+                        "Coulomb's Law"
+                    ],
+                    correct: 0
+                },
+                {
+                    question: "What does AC stand for?",
+                    options: [
+                        "Alternating Current",
+                        "Alternating Charge",
+                        "Active Current",
+                        "Ampere Current"
+                    ],
+                    correct: 0
+                },
+                {
+                    question: "Which device converts AC to DC?",
+                    options: [
+                        "Transformer",
+                        "Rectifier",
+                        "Inverter",
+                        "Converter"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "What is the frequency of household electricity in India?",
+                    options: [
+                        "50 Hz",
+                        "60 Hz",
+                        "100 Hz",
+                        "120 Hz"
+                    ],
+                    correct: 0
+                },
+                {
+                    question: "Which motor type is used in ceiling fans?",
+                    options: [
+                        "DC Motor",
+                        "Induction Motor",
+                        "Synchronous Motor",
+                        "Stepper Motor"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "What does PLC stand for?",
+                    options: [
+                        "Programmable Logic Controller",
+                        "Programmable Linear Controller",
+                        "Programmed Logic Circuit",
+                        "Programmed Linear Circuit"
+                    ],
+                    correct: 0
+                },
+                {
+                    question: "Which device protects against overcurrent?",
+                    options: [
+                        "Switch",
+                        "Fuse",
+                        "Circuit Breaker",
+                        "Relay"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "What is the unit of power?",
+                    options: [
+                        "Volt",
+                        "Ampere",
+                        "Ohm",
+                        "Watt"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which transformer increases voltage?",
+                    options: [
+                        "Step-up Transformer",
+                        "Step-down Transformer",
+                        "Isolation Transformer",
+                        "Auto Transformer"
+                    ],
+                    correct: 0
+                }
+            ]
+        };
+        
+        // Domain titles for display
+        const domainTitles = {
+            cse: "Computer Science Engineering (CSE)",
+            ece: "Electronics and Communication Engineering (ECE)",
+            mechanical: "Mechanical Engineering",
+            civil: "Civil Engineering",
+            electrical: "Electrical Engineering"
+        };
+        
+        // Event Listeners
+        registrationForm.addEventListener('submit', handleRegistration);
+        adminAccessBtn.addEventListener('click', handleAdminAccess);
+        backToRegistrationBtn.addEventListener('click', goBackToRegistration);
+        requestPermissionsBtn.addEventListener('click', requestPermissions);
+        enableFullscreenBtn.addEventListener('click', enableFullscreen);
+        prevQuestionBtn.addEventListener('click', showPreviousQuestion);
+        nextQuestionBtn.addEventListener('click', showNextQuestion);
+        submitQuizBtn.addEventListener('click', submitQuiz);
+        backToRegistrationFromAdminBtn.addEventListener('click', goBackToRegistrationFromAdmin);
+        acknowledgeWarningBtn.addEventListener('click', acknowledgeWarning);
+        returnFullscreenBtn.addEventListener('click', enableFullscreen);
+        finishTestBtn.addEventListener('click', finishTest);
+        closeModalBtn.addEventListener('click', closeModal);
+        closeModalBtn2.addEventListener('click', closeModal);
+        deleteCandidateBtn.addEventListener('click', showDeleteConfirmation);
+        confirmDeleteBtn.addEventListener('click', deleteCandidate);
+        cancelDeleteBtn.addEventListener('click', cancelDelete);
+        
+        // Tab switching detection
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+        window.addEventListener('blur', handleWindowBlur);
+        window.addEventListener('focus', handleWindowFocus);
+        
+        // Fullscreen change detection
+        document.addEventListener('fullscreenchange', handleFullscreenChange);
+        
+        // Initialize particles
+        createParticles();
+        
+        // Functions
+        function handleRegistration(e) {
+            e.preventDefault();
+            
+            // Get user details
+            userDetails = {
+                fullName: document.getElementById('fullName').value.trim(),
+                email: document.getElementById('email').value.trim(),
+                phone: document.getElementById('phone').value.trim(),
+                domain: document.getElementById('domain').value
+            };
+            
+            // Validate inputs
+            if (!userDetails.fullName || !userDetails.email || !userDetails.phone || !userDetails.domain) {
+                alert('Please fill all fields');
+                return;
+            }
+            
+            currentDomain = userDetails.domain;
+            
+            // Show permissions screen
+            registrationScreen.classList.remove('active');
+            permissionsScreen.classList.add('active');
+        }
+        
+        function handleAdminAccess() {
+            const adminEmail = document.getElementById('admin-email').value;
+            const adminPassword = document.getElementById('admin-password').value;
+            
+            if (adminEmail === ADMIN_EMAIL && adminPassword === ADMIN_PASSWORD) {
+                showAdminDashboard();
+            } else {
+                alert("Invalid admin credentials. Please try again.");
+            }
+        }
+        
+        function showAdminDashboard() {
+            registrationScreen.classList.remove('active');
+            adminDashboard.classList.add('active');
+            
+            // Display candidate results
+            displayCandidateResults();
+        }
+        
+        function displayCandidateResults() {
+            if (candidateResultsData.length === 0) {
+                candidateResults.innerHTML = '<p>No candidate results available yet.</p>';
+                return;
+            }
+            
+            let resultsHTML = '';
+            candidateResultsData.forEach((result, index) => {
+                resultsHTML += `
+                    <div class="candidate-item">
+                        <div class="candidate-info">
+                            <div class="candidate-name">${result.name}</div>
+                            <div class="candidate-details">${result.email} | ${result.domain} | ${result.date}</div>
+                        </div>
+                        <div class="candidate-score">${result.score}/10</div>
+                        <div>
+                            <button class="view-details-btn" data-index="${index}">View Details</button>
+                            <button class="delete-candidate-btn" data-index="${index}">Delete</button>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            candidateResults.innerHTML = resultsHTML;
+            
+            // Add event listeners to view details buttons
+            document.querySelectorAll('.view-details-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const index = this.getAttribute('data-index');
+                    showCandidateDetails(index);
+                });
+            });
+            
+            // Add event listeners to delete buttons
+            document.querySelectorAll('.delete-candidate-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const index = this.getAttribute('data-index');
+                    currentCandidateToDelete = index;
+                    showDeleteConfirmation();
+                });
+            });
+        }
+        
+        function showCandidateDetails(index) {
+            const candidate = candidateResultsData[index];
+            
+            let detailsHTML = `
+                <div class="admin-info">
+                    <p><strong>Candidate Name:</strong> ${candidate.name}</p>
+                    <p><strong>Email:</strong> ${candidate.email}</p>
+                    <p><strong>Phone:</strong> ${candidate.phone}</p>
+                    <p><strong>Domain:</strong> ${candidate.domain}</p>
+                    <p><strong>Date:</strong> ${candidate.date}</p>
+                    <div class="admin-score">Score: ${candidate.score}/10</div>
+                    ${candidate.faceWarnings !== undefined ? `<p><strong>Face Detection Warnings:</strong> ${candidate.faceWarnings}/2</p>` : ''}
+                    ${candidate.objectWarnings !== undefined ? `<p><strong>Object Detection Warnings:</strong> ${candidate.objectWarnings}/2</p>` : ''}
+                    ${candidate.tabSwitches !== undefined ? `<p><strong>Tab Switches:</strong> ${candidate.tabSwitches}</p>` : ''}
+                    ${candidate.terminated ? `<p><strong>Status:</strong> Terminated - ${candidate.terminationReason}</p>` : ''}
+                </div>
+                <div class="review-container">
+                    <h3>Detailed Results</h3>
+            `;
+            
+            // Add question review if available
+            if (candidate.review) {
+                candidate.review.forEach((item, i) => {
+                    detailsHTML += `
+                        <div class="review-item ${item.correct ? 'correct' : 'incorrect'}">
+                            <div class="question-text">${i + 1}. ${item.question}</div>
+                            <div class="user-answer">Your answer: ${item.userAnswer}</div>
+                            ${!item.correct ? `<div class="correct-answer">Correct answer: ${item.correctAnswer}</div>` : ''}
+                        </div>
+                    `;
+                });
+            } else {
+                detailsHTML += '<p>No detailed review available for this candidate.</p>';
+            }
+            
+            detailsHTML += `</div>`;
+            
+            modalBody.innerHTML = detailsHTML;
+            candidateDetailsModal.style.display = 'flex';
+            currentCandidateToDelete = index;
+        }
+        
+        function closeModal() {
+            candidateDetailsModal.style.display = 'none';
+            currentCandidateToDelete = null;
+        }
+        
+        function showDeleteConfirmation() {
+            if (currentCandidateToDelete !== null) {
+                confirmationDialog.style.display = 'flex';
+            }
+        }
+        
+        function deleteCandidate() {
+            if (currentCandidateToDelete !== null) {
+                candidateResultsData.splice(currentCandidateToDelete, 1);
+                localStorage.setItem('candidateResults', JSON.stringify(candidateResultsData));
+                displayCandidateResults();
+                closeModal();
+                confirmationDialog.style.display = 'none';
+                currentCandidateToDelete = null;
+            }
+        }
+        
+        function cancelDelete() {
+            confirmationDialog.style.display = 'none';
+        }
+        
+        function goBackToRegistration() {
+            permissionsScreen.classList.remove('active');
+            registrationScreen.classList.add('active');
+        }
+        
+        function goBackToRegistrationFromAdmin() {
+            adminDashboard.classList.remove('active');
+            registrationScreen.classList.add('active');
+        }
+        
+        async function requestPermissions() {
+            permissionError.style.display = 'none';
+            let allGranted = true;
+            
+            try {
+                // Request fullscreen
+                if (!document.fullscreenElement) {
+                    await document.documentElement.requestFullscreen();
+                    permissionState.fullscreen = true;
+                    updatePermissionStatus('fullscreen', 'granted');
+                } else {
+                    permissionState.fullscreen = true;
+                    updatePermissionStatus('fullscreen', 'granted');
+                }
+            } catch (error) {
+                console.error('Fullscreen permission denied:', error);
+                permissionState.fullscreen = false;
+                updatePermissionStatus('fullscreen', 'denied');
+                allGranted = false;
+                
+                // Show fullscreen warning
+                fullscreenWarning.style.display = 'flex';
+            }
+            
+            try {
+                // Request microphone access
+                microphoneStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                permissionState.microphone = true;
+                updatePermissionStatus('microphone', 'granted');
+            } catch (error) {
+                console.error('Microphone permission denied:', error);
+                permissionState.microphone = false;
+                updatePermissionStatus('microphone', 'denied');
+                allGranted = false;
+            }
+            
+            try {
+                // Request camera access
+                cameraStream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { 
+                        width: { ideal: 640 },
+                        height: { ideal: 480 },
+                        facingMode: "user"
+                    } 
+                });
+                permissionState.camera = true;
+                updatePermissionStatus('camera', 'granted');
+                
+                // Display camera feed
+                cameraFeed.srcObject = cameraStream;
+                cameraPreview.style.display = 'block';
+                
+                // Initialize face detection canvas
+                initializeFaceDetectionCanvas();
+                
+            } catch (error) {
+                console.error('Camera permission denied:', error);
+                permissionState.camera = false;
+                updatePermissionStatus('camera', 'denied');
+                allGranted = false;
+            }
+            
+            // Check if all permissions are granted
+            if (allGranted) {
+                // All permissions granted, start the quiz
+                setTimeout(startQuiz, 1000);
+            } else {
+                // Show error message
+                permissionError.style.display = 'block';
+                requestPermissionsBtn.innerHTML = '<i class="fas fa-redo"></i> Retry Permissions';
+            }
+        }
+        
+        function initializeFaceDetectionCanvas() {
+            // Wait for video to be ready
+            cameraFeed.onloadedmetadata = function() {
+                faceDetectionCanvas.width = cameraFeed.videoWidth || 640;
+                faceDetectionCanvas.height = cameraFeed.videoHeight || 480;
+                faceDetectionContext = faceDetectionCanvas.getContext('2d');
+            };
+            
+            // Set initial dimensions
+            faceDetectionCanvas.width = 640;
+            faceDetectionCanvas.height = 480;
+            faceDetectionContext = faceDetectionCanvas.getContext('2d');
+        }
+        
+        function updatePermissionStatus(permission, status) {
+            const element = document.getElementById(`${permission}-status`);
+            element.textContent = status.charAt(0).toUpperCase() + status.slice(1);
+            element.className = 'permission-status ' + status;
+        }
+        
+        function updateIndicator(indicator, active, warning = false) {
+            indicator.classList.remove('active', 'inactive', 'warning', 'alert');
+            
+            if (warning) {
+                indicator.classList.add('warning');
+            } else {
+                indicator.classList.add(active ? 'active' : 'inactive');
+            }
+        }
+        
+        async function enableFullscreen() {
+            try {
+                await document.documentElement.requestFullscreen();
+                fullscreenWarning.style.display = 'none';
+                fullscreenExitWarning.style.display = 'none';
+                permissionState.fullscreen = true;
+                updatePermissionStatus('fullscreen', 'granted');
+                updateIndicator(fullscreenIndicator, true);
+                
+                // If camera permission not granted, try again
+                if (!permissionState.camera && quizScreen.classList.contains('active')) {
+                    try {
+                        cameraStream = await navigator.mediaDevices.getUserMedia({ 
+                            video: { 
+                                width: { ideal: 640 },
+                                height: { ideal: 480 },
+                                facingMode: "user"
+                            } 
+                        });
+                        permissionState.camera = true;
+                        cameraFeed.srcObject = cameraStream;
+                        cameraPreview.style.display = 'block';
+                        initializeFaceDetectionCanvas();
+                    } catch (error) {
+                        console.error('Camera permission still denied:', error);
+                    }
+                }
+                
+            } catch (err) {
+                console.error('Error attempting to enable fullscreen:', err);
+            }
+        }
+        
+        function startQuiz() {
+            permissionsScreen.classList.remove('active');
+            quizScreen.classList.add('active');
+            
+            // Set domain title
+            domainTitle.textContent = `${domainTitles[currentDomain]} Assessment`;
+            
+            // Update monitoring indicators
+            updateIndicator(fullscreenIndicator, permissionState.fullscreen);
+            updateIndicator(microphoneIndicator, permissionState.microphone);
+            updateIndicator(cameraIndicator, permissionState.camera);
+            updateIndicator(activityIndicator, true);
+            
+            // Show monitoring elements
+            faceDetectionStatus.style.display = 'block';
+            objectDetectionStatus.style.display = 'block';
+            warningCounter.style.display = 'block';
+            
+            // Initialize user answers array
+            const questions = questionBanks[currentDomain] || questionBanks.cse;
+            userAnswers = new Array(questions.length).fill(null);
+            
+            // Reset all counters
+            resetQuizState();
+            
+            // Start the timer
+            startTimer();
+            
+            // Start monitoring systems
+            startFaceDetectionMonitoring();
+            startObjectDetectionMonitoring();
+            
+            // Display the first question
+            displayQuestion(currentQuestionIndex);
+        }
+        
+        function resetQuizState() {
+            // Reset all counters
+            faceWarnings = 0;
+            objectWarnings = 0;
+            tabSwitchCount = 0;
+            fullscreenExitCount = 0;
+            noFaceDetectionTime = 0;
+            faceDetectionState = 'present';
+            faceDetectionCycle = 0;
+            objectDetectionCycle = 0;
+            objectDetected = false;
+            
+            // Update UI counters
+            updateFaceWarningCounter();
+            updateObjectWarningCounter();
+            warningCountDisplay.textContent = '0/2';
+            
+            // Reset monitoring indicators
+            faceStatusIndicator.textContent = 'Active';
+            faceStatusIndicator.className = 'monitoring-value success';
+            objectStatusIndicator.textContent = 'Clear';
+            objectStatusIndicator.className = 'monitoring-value success';
+            
+            // Reset progress
+            progressElement.style.width = '0%';
+            progressPercentage.textContent = '0%';
+        }
+        
+        function startTimer() {
+            const totalTime = 30 * 60; // 30 minutes in seconds
+            timeLeft = totalTime; // Reset timer
+            
+            clearInterval(timer); // Clear any existing timer
+            
+            // Initial display
+            updateTimerDisplay();
+            
+            timer = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay();
+                
+                // Auto-submit when time is up
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    submitQuiz();
+                }
+            }, 1000);
+        }
+        
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            timerValue.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            // Update circular progress
+            const totalTime = 30 * 60;
+            const progressDegrees = ((totalTime - timeLeft) / totalTime) * 360;
+            circularProgress.style.background = `conic-gradient(var(--primary) ${progressDegrees}deg, #e2e8f0 ${progressDegrees}deg)`;
+            
+            // Update progress bar
+            const progressPercentageValue = ((totalTime - timeLeft) / totalTime) * 100;
+            progressElement.style.width = `${progressPercentageValue}%`;
+            progressPercentage.textContent = `${Math.round(progressPercentageValue)}%`;
+            
+            // Change color when time is running out
+            if (timeLeft < 300) { // 5 minutes
+                timerValue.classList.add('warning');
+                circularProgress.style.background = `conic-gradient(var(--danger) ${progressDegrees}deg, #e2e8f0 ${progressDegrees}deg)`;
+            } else {
+                timerValue.classList.remove('warning');
+            }
+        }
+        
+        function displayQuestion(index) {
+            const questions = questionBanks[currentDomain] || questionBanks.cse;
+            if (!questions || questions.length === 0) {
+                questionArea.innerHTML = '<div class="error-message">No questions available for this domain.</div>';
+                return;
+            }
+            
+            const question = questions[index];
+            
+            // Update question counter
+            questionCounter.textContent = `Question ${index + 1} of ${questions.length}`;
+            
+            // Create question HTML
+            let questionHTML = `
+                <div class="question-container">
+                    <div class="question-inner">
+                        <div class="question-text">${index + 1}. ${question.question}</div>
+                        <div class="options-container">
+            `;
+            
+            question.options.forEach((option, i) => {
+                const isSelected = userAnswers[index] === i;
+                questionHTML += `
+                    <div class="option ${isSelected ? 'selected' : ''}" data-index="${i}">
+                        ${option}
+                    </div>
+                `;
+            });
+            
+            questionHTML += `</div></div></div>`;
+            
+            questionArea.innerHTML = questionHTML;
+            
+            // Add event listeners to options
+            document.querySelectorAll('.option').forEach(option => {
+                option.addEventListener('click', () => {
+                    // Remove selected class from all options in this question
+                    option.parentElement.querySelectorAll('.option').forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+                    
+                    // Add selected class to clicked option
+                    option.classList.add('selected');
+                    
+                    // Save user's answer
+                    const answerIndex = parseInt(option.getAttribute('data-index'));
+                    userAnswers[index] = answerIndex;
+                });
+            });
+            
+            // Update navigation buttons
+            prevQuestionBtn.disabled = index === 0;
+            nextQuestionBtn.disabled = index === questions.length - 1;
+            submitQuizBtn.disabled = false;
+        }
+        
+        function showPreviousQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                displayQuestion(currentQuestionIndex);
+            }
+        }
+        
+        function showNextQuestion() {
+            const questions = questionBanks[currentDomain] || questionBanks.cse;
+            if (currentQuestionIndex < questions.length - 1) {
+                currentQuestionIndex++;
+                displayQuestion(currentQuestionIndex);
+            }
+        }
+        
+        // Face Detection Functions - FIXED
+        function startFaceDetectionMonitoring() {
+            // Clear any existing interval
+            clearInterval(faceDetectionInterval);
+            
+            // Check for face every second
+            faceDetectionInterval = setInterval(() => {
+                if (!quizScreen.classList.contains('active')) return;
+                
+                faceDetectionCycle++;
+                
+                // Simulate face detection pattern: 
+                // Face present for 25 seconds, absent for 5 seconds (simulating natural movement)
+                if (faceDetectionCycle <= 25) {
+                    faceDetectionState = 'present';
+                } else if (faceDetectionCycle <= 30) {
+                    faceDetectionState = 'absent';
+                } else {
+                    faceDetectionCycle = 0; // Reset cycle
+                    faceDetectionState = 'present';
+                }
+                
+                // Update face detection based on state
+                if (faceDetectionState === 'present') {
+                    handleFaceDetected();
+                } else {
+                    handleFaceNotDetected();
+                }
+                
+                // Update canvas visualization
+                updateFaceDetectionCanvas();
+                
+            }, 1000); // Check every second
+        }
+        
+        function updateFaceDetectionCanvas() {
+            if (!faceDetectionContext || cameraFeed.readyState !== 4) return;
+            
+            // Clear canvas
+            faceDetectionContext.clearRect(0, 0, faceDetectionCanvas.width, faceDetectionCanvas.height);
+            
+            if (faceDetectionState === 'present') {
+                // Draw green face detection box
+                faceDetectionContext.strokeStyle = '#10b981';
+                faceDetectionContext.lineWidth = 3;
+                const boxWidth = faceDetectionCanvas.width * 0.4;
+                const boxHeight = faceDetectionCanvas.height * 0.5;
+                const boxX = (faceDetectionCanvas.width - boxWidth) / 2;
+                const boxY = (faceDetectionCanvas.height - boxHeight) / 3;
+                faceDetectionContext.strokeRect(boxX, boxY, boxWidth, boxHeight);
+                
+                // Add text
+                faceDetectionContext.fillStyle = '#10b981';
+                faceDetectionContext.font = 'bold 16px Arial';
+                faceDetectionContext.fillText('✓ Face Detected', 10, 25);
+                
+            } else {
+                // Draw red X for no face
+                faceDetectionContext.strokeStyle = '#ef4444';
+                faceDetectionContext.lineWidth = 4;
+                const centerX = faceDetectionCanvas.width / 2;
+                const centerY = faceDetectionCanvas.height / 2;
+                const size = Math.min(faceDetectionCanvas.width, faceDetectionCanvas.height) * 0.2;
+                
+                faceDetectionContext.beginPath();
+                faceDetectionContext.moveTo(centerX - size, centerY - size);
+                faceDetectionContext.lineTo(centerX + size, centerY + size);
+                faceDetectionContext.moveTo(centerX + size, centerY - size);
+                faceDetectionContext.lineTo(centerX - size, centerY + size);
+                faceDetectionContext.stroke();
+                
+                // Add text
+                faceDetectionContext.fillStyle = '#ef4444';
+                faceDetectionContext.font = 'bold 16px Arial';
+                faceDetectionContext.fillText('✗ Face Not Detected', 10, 25);
+            }
+        }
+        
+        function handleFaceDetected() {
+            // Face detected - update UI
+            faceDetectionStatus.style.display = 'block';
+            faceDetectionStatus.className = 'face-detection-status';
+            faceDetectionStatus.innerHTML = '<i class="fas fa-user-check"></i> Face Detected';
+            faceStatusIndicator.textContent = 'Active';
+            faceStatusIndicator.className = 'monitoring-value success';
+            
+            // Update activity indicator
+            updateIndicator(activityIndicator, true);
+            
+            // Reset no face detection time
+            noFaceDetectionTime = 0;
+            
+            // Hide warnings if active
+            faceDetectionWarning.style.display = 'none';
+            faceNotPresentWarning.style.display = 'none';
+        }
+        
+        function handleFaceNotDetected() {
+            // Face NOT detected - increment counter
+            noFaceDetectionTime++;
+            
+            // Update face detection status
+            faceDetectionStatus.style.display = 'block';
+            faceDetectionStatus.className = 'face-detection-status warning';
+            faceDetectionStatus.innerHTML = '<i class="fas fa-user-slash"></i> Face Not Detected';
+            faceStatusIndicator.textContent = 'Not Detected';
+            faceStatusIndicator.className = 'monitoring-value warning';
+            
+            // Update activity indicator
+            updateIndicator(activityIndicator, false, true);
+            
+            // Show appropriate warnings
+            if (noFaceDetectionTime === 3 && faceWarnings < maxFaceWarnings) {
+                // First warning after 3 seconds
+                faceWarnings = 1;
+                updateFaceWarningCounter();
+                showFaceNotPresentWarning(1);
+            }
+            
+            if (noFaceDetectionTime === 6 && faceWarnings < maxFaceWarnings) {
+                // Second warning after 6 seconds
+                faceWarnings = 2;
+                updateFaceWarningCounter();
+                showFaceNotPresentWarning(2);
+                
+                // Start termination countdown for second warning
+                startFaceDetectionTerminationCountdown();
+            }
+            
+            // Terminate test after 2 warnings and 10 seconds of no face
+            if (faceWarnings >= maxFaceWarnings && noFaceDetectionTime >= 10) {
+                terminateForFaceDetectionViolation();
+            }
+        }
+        
+        function showFaceNotPresentWarning(warningNumber) {
+            // Show the small warning at the top
+            faceNotPresentWarning.style.display = 'block';
+            faceNotPresentWarning.innerHTML = `<i class="fas fa-user-slash"></i> Face not detected! (Warning ${warningNumber}/2)`;
+            
+            // Hide warning after 3 seconds
+            setTimeout(() => {
+                faceNotPresentWarning.style.display = 'none';
+            }, 3000);
+        }
+        
+        function startFaceDetectionTerminationCountdown() {
+            faceDetectionWarning.style.display = 'block';
+            
+            let countdown = 5;
+            faceDetectionCountdown.textContent = countdown;
+            
+            const countdownInterval = setInterval(() => {
+                countdown--;
+                faceDetectionCountdown.textContent = countdown;
+                
+                if (countdown <= 0) {
+                    clearInterval(countdownInterval);
+                    faceDetectionWarning.style.display = 'none';
+                    terminateForFaceDetectionViolation();
+                }
+            }, 1000);
+        }
+        
+        function updateFaceWarningCounter() {
+            warningCounter.style.display = 'block';
+            warningCountDisplay.textContent = `${faceWarnings}/${maxFaceWarnings}`;
+            faceWarningIndicator.textContent = `${faceWarnings}/${maxFaceWarnings}`;
+            
+            // Update warning status color
+            if (faceWarnings === 0) {
+                faceWarningIndicator.className = 'monitoring-value success';
+            } else if (faceWarnings === 1) {
+                faceWarningIndicator.className = 'monitoring-value warning';
+            } else {
+                faceWarningIndicator.className = 'monitoring-value danger';
+            }
+            
+            // Make warning counter pulse on new warning
+            warningCounter.style.animation = 'none';
+            setTimeout(() => {
+                warningCounter.style.animation = 'pulseDanger 0.5s';
+            }, 10);
+        }
+        
+        function terminateForFaceDetectionViolation() {
+            clearInterval(faceDetectionInterval);
+            clearInterval(objectDetectionInterval);
+            clearInterval(timer);
+            
+            // Show termination message
+            questionArea.innerHTML = '<div class="error-message" style="display: block;"><i class="fas fa-user-slash"></i> Test terminated: Face not detected for extended period.</div>';
+            prevQuestionBtn.disabled = true;
+            nextQuestionBtn.disabled = true;
+            submitQuizBtn.disabled = true;
+            
+            // Stop media streams
+            stopMediaStreams();
+            
+            // Hide camera preview
+            cameraPreview.style.display = 'none';
+            
+            // Exit fullscreen
+            if (document.fullscreenElement) {
+                document.exitFullscreen();
+            }
+            
+            // Show results after 2 seconds
+            setTimeout(() => {
+                calculateAndShowResults(true, "Face not detected for extended period");
+            }, 2000);
+        }
+        
+        // Object Detection Functions - FIXED
+        function startObjectDetectionMonitoring() {
+            // Clear any existing interval
+            clearInterval(objectDetectionInterval);
+            
+            // Check for objects every 2 seconds
+            objectDetectionInterval = setInterval(() => {
+                if (!quizScreen.classList.contains('active')) return;
+                
+                objectDetectionCycle++;
+                
+                // Simulate object detection pattern:
+                // Object appears every 45 seconds for 10 seconds
+                if (objectDetectionCycle % 45 === 0 && objectDetectionCycle > 0) {
+                    // Object detected
+                    if (objectWarnings < maxObjectWarnings) {
+                        objectWarnings++;
+                        updateObjectWarningCounter();
+                        
+                        // Update object detection status
+                        objectDetectionStatus.style.display = 'block';
+                        objectDetectionStatus.className = 'object-detection-status danger';
+                        objectDetectionStatus.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Suspicious Object Detected!';
+                        objectStatusIndicator.textContent = 'Suspicious';
+                        objectStatusIndicator.className = 'monitoring-value danger';
+                        
+                        // Show warning
+                        showObjectDetectionWarning();
+                        
+                        // Update activity indicator
+                        updateIndicator(activityIndicator, false, true);
+                        
+                        // Mark object as detected
+                        objectDetected = true;
+                        
+                        // If 2 or more object warnings, start termination
+                        if (objectWarnings >= maxObjectWarnings) {
+                            startObjectDetectionTerminationCountdown();
+                        }
+                    }
+                } 
+                // Clear object detection after 10 seconds
+                else if (objectDetected && objectDetectionCycle % 55 === 0) {
+                    objectDetected = false;
+                    objectDetectionStatus.style.display = 'block';
+                    objectDetectionStatus.className = 'object-detection-status';
+                    objectDetectionStatus.innerHTML = '<i class="fas fa-check-circle"></i> No Suspicious Objects';
+                    objectStatusIndicator.textContent = 'Clear';
+                    objectStatusIndicator.className = 'monitoring-value success';
+                    updateIndicator(activityIndicator, true);
+                }
+                
+                // Reset cycle if too large
+                if (objectDetectionCycle > 1000) {
+                    objectDetectionCycle = 0;
+                }
+                
+            }, 1000); // Check every second
+        }
+        
+        function updateObjectWarningCounter() {
+            objectWarningIndicator.textContent = `${objectWarnings}/${maxObjectWarnings}`;
+            
+            // Update warning status color
+            if (objectWarnings === 0) {
+                objectWarningIndicator.className = 'monitoring-value success';
+            } else if (objectWarnings === 1) {
+                objectWarningIndicator.className = 'monitoring-value warning';
+            } else {
+                objectWarningIndicator.className = 'monitoring-value danger';
+            }
+        }
+        
+        function showObjectDetectionWarning() {
+            objectDetectionWarning.style.display = 'block';
+            objectDetectionWarning.innerHTML = '<i class="fas fa-exclamation-circle"></i> Suspicious object (mobile phone) detected in camera view!';
+            
+            // Hide warning after 5 seconds
+            setTimeout(() => {
+                objectDetectionWarning.style.display = 'none';
+            }, 5000);
+        }
+        
+        function startObjectDetectionTerminationCountdown() {
+            // Show termination warning
+            faceDetectionWarning.style.display = 'block';
+            faceDetectionWarning.innerHTML = `
+                <h3><i class="fas fa-mobile-alt"></i> Suspicious Object Detected</h3>
+                <p>Mobile phone detected multiple times. Test will be terminated.</p>
+                <div class="face-detection-countdown" id="object-termination-countdown">5</div>
+                <p>Please remove all unauthorized objects.</p>
+            `;
+            
+            let countdown = 5;
+            const countdownElement = document.getElementById('object-termination-countdown') || faceDetectionCountdown;
+            countdownElement.textContent = countdown;
+            
+            const countdownInterval = setInterval(() => {
+                countdown--;
+                countdownElement.textContent = countdown;
+                
+                if (countdown <= 0) {
+                    clearInterval(countdownInterval);
+                    faceDetectionWarning.style.display = 'none';
+                    terminateForObjectDetectionViolation();
+                }
+            }, 1000);
+        }
+        
+        function terminateForObjectDetectionViolation() {
+            clearInterval(timer);
+            clearInterval(faceDetectionInterval);
+            clearInterval(objectDetectionInterval);
+            
+            // Show termination message
+            questionArea.innerHTML = '<div class="error-message" style="display: block;"><i class="fas fa-mobile-alt"></i> Test terminated: Suspicious object (mobile phone) detected multiple times.</div>';
+            prevQuestionBtn.disabled = true;
+            nextQuestionBtn.disabled = true;
+            submitQuizBtn.disabled = true;
+            
+            // Stop media streams
+            stopMediaStreams();
+            
+            // Hide camera preview
+            cameraPreview.style.display = 'none';
+            
+            // Exit fullscreen
+            if (document.fullscreenElement) {
+                document.exitFullscreen();
+            }
+            
+            // Show results after 2 seconds
+            setTimeout(() => {
+                calculateAndShowResults(true, "Suspicious object (mobile phone) detected multiple times");
+            }, 2000);
+        }
+        
+        function stopMediaStreams() {
+            if (cameraStream) {
+                cameraStream.getTracks().forEach(track => track.stop());
+                cameraStream = null;
+            }
+            if (microphoneStream) {
+                microphoneStream.getTracks().forEach(track => track.stop());
+                microphoneStream = null;
+            }
+        }
+        
+        function calculateAndShowResults(terminated = false, terminationReason = "") {
+            // Calculate score
+            const questions = questionBanks[currentDomain] || questionBanks.cse;
+            let score = 0;
+            let reviewData = [];
+            
+            if (questions) {
+                questions.forEach((question, index) => {
+                    const isCorrect = userAnswers[index] === question.correct;
+                    if (isCorrect && userAnswers[index] !== null) {
+                        score++;
+                    }
+                    
+                    // Prepare review data
+                    reviewData.push({
+                        question: question.question,
+                        userAnswer: userAnswers[index] !== null ? question.options[userAnswers[index]] : 'Not answered',
+                        correctAnswer: question.options[question.correct],
+                        correct: isCorrect
+                    });
+                });
+            }
+            
+            // Store candidate result
+            const candidateResult = {
+                name: userDetails.fullName,
+                email: userDetails.email,
+                phone: userDetails.phone,
+                domain: domainTitles[currentDomain],
+                score: score,
+                review: reviewData,
+                faceWarnings: faceWarnings,
+                objectWarnings: objectWarnings,
+                tabSwitches: tabSwitchCount,
+                terminated: terminated,
+                terminationReason: terminationReason,
+                date: new Date().toLocaleString()
+            };
+            
+            candidateResultsData.push(candidateResult);
+            localStorage.setItem('candidateResults', JSON.stringify(candidateResultsData));
+            
+            // Show results screen
+            showResults(score, reviewData, terminated, terminationReason);
+        }
+        
+        function submitQuiz() {
+            clearInterval(timer);
+            clearInterval(faceDetectionInterval);
+            clearInterval(objectDetectionInterval);
+            
+            // Calculate score and show results
+            calculateAndShowResults(false);
+        }
+        
+        function showResults(score, reviewData, terminated = false, terminationReason = "") {
+            // Hide quiz screen
+            quizScreen.classList.remove('active');
+            
+            // Hide monitoring elements
+            faceDetectionStatus.style.display = 'none';
+            objectDetectionStatus.style.display = 'none';
+            warningCounter.style.display = 'none';
+            cameraPreview.style.display = 'none';
+            
+            // Stop media streams
+            stopMediaStreams();
+            
+            // Exit fullscreen
+            if (document.fullscreenElement) {
+                document.exitFullscreen();
+            }
+            
+            // Show results screen
+            resultsScreen.classList.add('active');
+            
+            // Update score message
+            if (terminated) {
+                scoreMessage.innerHTML = `<div class="error-message" style="display: block; margin-bottom: 20px;">
+                    <i class="fas fa-exclamation-triangle"></i> Test terminated: ${terminationReason}
+                </div>Your assessment has been completed and submitted successfully.`;
+            } else {
+                scoreMessage.textContent = "Your assessment has been completed and submitted successfully.";
+            }
+        }
+        
+        function finishTest() {
+            resultsScreen.classList.remove('active');
+            registrationScreen.classList.add('active');
+            
+            // Reset form
+            registrationForm.reset();
+            
+            // Reset quiz state
+            currentQuestionIndex = 0;
+            userAnswers = [];
+            timeLeft = 30 * 60;
+            resetQuizState();
+            
+            // Clear any intervals
+            clearInterval(timer);
+            clearInterval(faceDetectionInterval);
+            clearInterval(objectDetectionInterval);
+            
+            // Reset timer display
+            timerValue.textContent = '30:00';
+            timerValue.classList.remove('warning');
+            circularProgress.style.background = 'conic-gradient(var(--primary) 0deg, #e2e8f0 0deg)';
+        }
+        
+        // Tab switching detection functions
+        function handleVisibilityChange() {
+            if (document.hidden && quizScreen.classList.contains('active')) {
+                // Tab/window is hidden during quiz
+                handleTabSwitch();
+            } else if (!document.hidden) {
+                // Tab/window is visible again
+                isTabActive = true;
+            }
+        }
+        
+        function handleWindowBlur() {
+            // Window lost focus
+            if (quizScreen.classList.contains('active')) {
+                handleTabSwitch();
+            }
+        }
+        
+        function handleWindowFocus() {
+            // Window gained focus
+            isTabActive = true;
+        }
+        
+        function handleTabSwitch() {
+            if (quizScreen.classList.contains('active')) {
+                tabSwitchCount++;
+                warningCountElement.textContent = tabSwitchCount;
+                tabSwitchWarning.style.display = 'flex';
+                isTabActive = false;
+                
+                // Update activity indicator
+                updateIndicator(activityIndicator, false, true);
+                
+                // If 3 or more tab switches, terminate the quiz
+                if (tabSwitchCount >= 3) {
+                    setTimeout(() => {
+                        autoTerminateQuiz("Tab switching violation");
+                    }, 2000);
+                }
+            }
+        }
+        
+        function acknowledgeWarning() {
+            tabSwitchWarning.style.display = 'none';
+            updateIndicator(activityIndicator, true);
+        }
+        
+        // Fullscreen change detection
+        function handleFullscreenChange() {
+            if (document.fullscreenElement) {
+                // User entered fullscreen
+                permissionState.fullscreen = true;
+                updateIndicator(fullscreenIndicator, true);
+                fullscreenExitWarning.style.display = 'none';
+                fullscreenExitCount = 0;
+            } else if (quizScreen.classList.contains('active')) {
+                // User exited fullscreen during quiz - show warning
+                permissionState.fullscreen = false;
+                updateIndicator(fullscreenIndicator, false);
+                fullscreenExitCount++;
+                
+                // Show fullscreen exit warning
+                fullscreenExitCountElement.textContent = 3 - fullscreenExitCount;
+                fullscreenExitWarning.style.display = 'flex';
+                
+                // If 3 or more fullscreen exits, terminate the quiz
+                if (fullscreenExitCount >= 3) {
+                    setTimeout(() => {
+                        autoTerminateQuiz("Full screen mode violation");
+                    }, 2000);
+                }
+            }
+        }
+        
+        // Auto terminate quiz function
+        function autoTerminateQuiz(reason) {
+            // Clear all intervals
+            clearInterval(timer);
+            clearInterval(faceDetectionInterval);
+            clearInterval(objectDetectionInterval);
+            
+            // Stop media streams
+            stopMediaStreams();
+            
+            // Hide monitoring elements
+            faceDetectionStatus.style.display = 'none';
+            objectDetectionStatus.style.display = 'none';
+            warningCounter.style.display = 'none';
+            cameraPreview.style.display = 'none';
+            
+            // Exit fullscreen
+            if (document.fullscreenElement) {
+                document.exitFullscreen();
+            }
+            
+            // Show auto termination warning
+            autoTerminationWarning.style.display = 'flex';
+            
+            // Countdown and redirect
+            let countdown = 3;
+            terminationCountdownElement.textContent = countdown;
+            
+            const countdownInterval = setInterval(() => {
+                countdown--;
+                terminationCountdownElement.textContent = countdown;
+                
+                if (countdown <= 0) {
+                    clearInterval(countdownInterval);
+                    autoTerminationWarning.style.display = 'none';
+                    
+                    // Calculate score and show results
+                    calculateAndShowResults(true, reason);
+                }
+            }, 1000);
+        }
+        
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            // Reset all counters on page load
+            resetQuizState();
+            
+            // Make sure the registration screen is active
+            registrationScreen.classList.add('active');
+            permissionsScreen.classList.remove('active');
+            quizScreen.classList.remove('active');
+            resultsScreen.classList.remove('active');
+            adminDashboard.classList.remove('active');
+            
+            // Clear any existing intervals
+            clearInterval(timer);
+            clearInterval(faceDetectionInterval);
+            clearInterval(objectDetectionInterval);
+        });
+    </script>
+</body>
+</html>

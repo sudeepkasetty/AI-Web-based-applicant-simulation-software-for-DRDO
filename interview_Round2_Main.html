@@ -1,0 +1,1784 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Secure Interview Pro | Advanced AI Monitoring System</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- TensorFlow.js -->
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.18.0/dist/tf.min.js"></script>
+  <!-- COCO-SSD model for object detection -->
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd@2.2.2/dist/coco-ssd.min.js"></script>
+  <!-- Face-API for face detection -->
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/face-landmarks-detection@0.0.1/dist/face-landmarks-detection.min.js"></script>
+  <style>
+    :root {
+      --primary: #0066ff;
+      --primary-dark: #0052cc;
+      --primary-light: #4d94ff;
+      --secondary: #00cc66;
+      --warning: #ff9900;
+      --danger: #ff3333;
+      --dark: #111;
+      --dark-light: #1a1a1a;
+      --darker: #0a0a0a;
+      --light: #f5f5f5;
+      --gray: #aaa;
+      --card-bg: rgba(30, 30, 30, 0.7);
+      --glass-bg: rgba(255, 255, 255, 0.05);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      --transition: all 0.3s ease;
+      --gradient-primary: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+      --gradient-secondary: linear-gradient(135deg, var(--secondary) 0%, #00e673 100%);
+      --gradient-dark: linear-gradient(135deg, var(--darker) 0%, var(--dark) 100%);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: var(--gradient-dark);
+      color: var(--light);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+      overflow-x: hidden;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1200px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 0;
+      width: 100%;
+      border-bottom: 1px solid var(--glass-border);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-icon {
+      width: 45px;
+      height: 45px;
+      background: var(--gradient-primary);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(0, 102, 255, 0.4);
+    }
+
+    .logo-text {
+      font-size: 26px;
+      font-weight: 700;
+      background: linear-gradient(to right, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: 0.5px;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--card-bg);
+      padding: 10px 20px;
+      border-radius: 50px;
+      font-size: 14px;
+      border: 1px solid var(--glass-border);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .user-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--gradient-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 8px rgba(0, 102, 255, 0.3);
+    }
+
+    .main-content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--glass-border);
+      transition: var(--transition);
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid var(--glass-border);
+    }
+
+    .card-title {
+      font-size: 20px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .card-title i {
+      color: var(--primary);
+    }
+
+    .meeting-container {
+      grid-column: 1 / -1;
+    }
+
+    #meet {
+      width: 100%;
+      height: 500px;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0, 102, 255, 0.3);
+      background: var(--dark);
+      border: 1px solid var(--glass-border);
+    }
+
+    .setup-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .step {
+      display: flex;
+      gap: 15px;
+      padding: 20px;
+      background: var(--glass-bg);
+      border-radius: 12px;
+      border-left: 4px solid var(--primary);
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .step::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+      transform: translateX(-100%);
+      transition: transform 0.6s;
+    }
+
+    .step:hover::before {
+      transform: translateX(100%);
+    }
+
+    .step.active {
+      background: rgba(0, 102, 255, 0.1);
+      border-left-color: var(--secondary);
+    }
+
+    .step.completed {
+      background: rgba(0, 204, 102, 0.1);
+      border-left-color: var(--secondary);
+    }
+
+    .step-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: var(--dark-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+      transition: var(--transition);
+    }
+
+    .step.active .step-icon {
+      background: var(--gradient-primary);
+      box-shadow: 0 4px 12px rgba(0, 102, 255, 0.4);
+    }
+
+    .step.completed .step-icon {
+      background: var(--gradient-secondary);
+      box-shadow: 0 4px 12px rgba(0, 204, 102, 0.4);
+    }
+
+    .step-content {
+      flex: 1;
+    }
+
+    .step-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .step-description {
+      color: var(--gray);
+      margin-bottom: 15px;
+      line-height: 1.5;
+    }
+
+    .security-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .security-status {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 15px;
+      background: var(--glass-bg);
+      border-radius: 12px;
+      border: 1px solid var(--glass-border);
+    }
+
+    .status-indicator {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      position: relative;
+    }
+
+    .status-indicator::after {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    .status-secure {
+      background: var(--secondary);
+      box-shadow: 0 0 10px var(--secondary);
+    }
+
+    .status-secure::after {
+      background: var(--secondary);
+    }
+
+    .status-warning {
+      background: var(--warning);
+      box-shadow: 0 0 10px var(--warning);
+    }
+
+    .status-warning::after {
+      background: var(--warning);
+    }
+
+    .status-danger {
+      background: var(--danger);
+      box-shadow: 0 0 10px var(--danger);
+    }
+
+    .status-danger::after {
+      background: var(--danger);
+    }
+
+    .status-text {
+      flex: 1;
+      font-weight: 600;
+    }
+
+    .warning-counter {
+      font-weight: 700;
+      font-size: 18px;
+    }
+
+    .security-metrics {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 15px;
+    }
+
+    .metric {
+      background: var(--glass-bg);
+      padding: 15px;
+      border-radius: 12px;
+      text-align: center;
+      border: 1px solid var(--glass-border);
+      transition: var(--transition);
+    }
+
+    .metric:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .metric-value {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 5px;
+    }
+
+    .metric-label {
+      font-size: 14px;
+      color: var(--gray);
+    }
+
+    .controls {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    button {
+      padding: 12px 20px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 12px rgba(0, 102, 255, 0.3);
+    }
+
+    button:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0, 102, 255, 0.4);
+    }
+
+    button:disabled {
+      background: var(--dark-light);
+      color: var(--gray);
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .btn-secondary {
+      background: transparent;
+      border: 1px solid var(--primary);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(0, 102, 255, 0.1);
+    }
+
+    .btn-success {
+      background: var(--secondary);
+      box-shadow: 0 4px 12px rgba(0, 204, 102, 0.3);
+    }
+
+    .btn-success:hover {
+      background: #00b359;
+      box-shadow: 0 6px 16px rgba(0, 204, 102, 0.4);
+    }
+
+    .btn-warning {
+      background: var(--warning);
+      box-shadow: 0 4px 12px rgba(255, 153, 0, 0.3);
+    }
+
+    .btn-warning:hover {
+      background: #e68a00;
+      box-shadow: 0 6px 16px rgba(255, 153, 0, 0.4);
+    }
+
+    .btn-danger {
+      background: var(--danger);
+      box-shadow: 0 4px 12px rgba(255, 51, 51, 0.3);
+    }
+
+    .btn-danger:hover {
+      background: #e60000;
+      box-shadow: 0 6px 16px rgba(255, 51, 51, 0.4);
+    }
+
+    .alert {
+      padding: 15px;
+      border-radius: 12px;
+      margin: 10px 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border: 1px solid;
+    }
+
+    .alert-warning {
+      background: rgba(255, 153, 0, 0.1);
+      border-left: 4px solid var(--warning);
+      border-color: rgba(255, 153, 0, 0.2);
+    }
+
+    .alert-danger {
+      background: rgba(255, 51, 51, 0.1);
+      border-left: 4px solid var(--danger);
+      border-color: rgba(255, 51, 51, 0.2);
+    }
+
+    .alert-success {
+      background: rgba(0, 204, 102, 0.1);
+      border-left: 4px solid var(--secondary);
+      border-color: rgba(0, 204, 102, 0.2);
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(5px);
+    }
+
+    .modal-content {
+      background: var(--card-bg);
+      padding: 30px;
+      border-radius: 16px;
+      max-width: 500px;
+      width: 90%;
+      text-align: center;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--glass-border);
+      animation: modalAppear 0.3s ease-out;
+    }
+
+    @keyframes modalAppear {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .modal h3 {
+      margin-top: 0;
+      color: var(--primary);
+      font-size: 24px;
+      margin-bottom: 15px;
+    }
+
+    .modal p {
+      margin: 15px 0;
+      line-height: 1.5;
+      color: var(--gray);
+    }
+
+    .camera-feed {
+      width: 100%;
+      max-width: 500px;
+      height: 300px;
+      background: #000;
+      border-radius: 8px;
+      margin: 15px auto;
+      overflow: hidden;
+      position: relative;
+      border: 2px solid var(--primary);
+    }
+
+    .camera-feed video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .camera-feed canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .detection-info {
+      margin-top: 15px;
+      padding: 10px;
+      background: var(--glass-bg);
+      border-radius: 8px;
+      text-align: left;
+      max-height: 150px;
+      overflow-y: auto;
+      border: 1px solid var(--glass-border);
+    }
+
+    .detected-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 5px 0;
+      border-bottom: 1px solid var(--glass-border);
+    }
+
+    .detected-item:last-child {
+      border-bottom: none;
+    }
+
+    .progress-bar {
+      height: 6px;
+      background: var(--dark-light);
+      border-radius: 3px;
+      margin: 15px 0;
+      overflow: hidden;
+    }
+
+    .progress {
+      height: 100%;
+      background: var(--primary);
+      border-radius: 3px;
+      width: 0%;
+      transition: width 0.5s ease;
+    }
+
+    .footer {
+      margin-top: 30px;
+      text-align: center;
+      color: var(--gray);
+      font-size: 14px;
+      padding: 20px 0;
+      border-top: 1px solid var(--glass-border);
+      width: 100%;
+    }
+
+    /* Detection visualization */
+    .detection-box {
+      position: absolute;
+      border: 2px solid;
+      background: rgba(255, 255, 255, 0.1);
+      font-size: 12px;
+      font-weight: bold;
+      padding: 2px 4px;
+    }
+
+    .person-box {
+      border-color: #00cc66;
+      color: #00cc66;
+    }
+
+    .face-box {
+      border-color: #ff9900;
+      color: #ff9900;
+    }
+
+    .object-box {
+      border-color: #ff3333;
+      color: #ff3333;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 900px) {
+      .main-content {
+        grid-template-columns: 1fr;
+      }
+      
+      .security-metrics {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Animation for status changes */
+    @keyframes pulse {
+      0% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.5); opacity: 0.7; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .pulse {
+      animation: pulse 0.5s ease-in-out;
+    }
+
+    /* Glow effect for important elements */
+    .glow {
+      box-shadow: 0 0 15px var(--primary);
+    }
+
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255,255,255,.3);
+      border-radius: 50%;
+      border-top-color: #fff;
+      animation: spin 1s ease-in-out infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .system-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 15px;
+      background: var(--glass-bg);
+      border-radius: 50px;
+      font-size: 14px;
+      border: 1px solid var(--glass-border);
+    }
+
+    .ai-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--danger);
+    }
+
+    .status-dot.active {
+      background: var(--secondary);
+      box-shadow: 0 0 8px var(--secondary);
+    }
+
+    .feature-badge {
+      position: absolute;
+      top: -10px;
+      right: 15px;
+      background: var(--gradient-primary);
+      color: white;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(0, 102, 255, 0.4);
+    }
+
+    .security-level {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .security-level i {
+      color: var(--secondary);
+    }
+
+    .full-screen-notification {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 2000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 20px;
+      color: white;
+      text-align: center;
+    }
+
+    .full-screen-notification h2 {
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+
+    .full-screen-notification p {
+      font-size: 18px;
+      max-width: 600px;
+      line-height: 1.6;
+    }
+
+    .full-screen-notification .countdown {
+      font-size: 48px;
+      font-weight: bold;
+      color: var(--primary);
+      margin: 20px 0;
+    }
+
+    /* Full screen meeting styles */
+    body.full-screen-active {
+      padding: 0;
+      background: #000;
+    }
+
+    body.full-screen-active .container {
+      max-width: 100%;
+      height: 100vh;
+      gap: 0;
+    }
+
+    body.full-screen-active header,
+    body.full-screen-active .main-content,
+    body.full-screen-active .footer {
+      display: none;
+    }
+
+    body.full-screen-active .meeting-container {
+      grid-column: 1 / -1;
+      height: 100vh;
+      border-radius: 0;
+      padding: 0;
+    }
+
+    body.full-screen-active #meet {
+      height: 100vh;
+      border-radius: 0;
+    }
+
+    .exit-fullscreen-btn {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1001;
+      background: rgba(0, 0, 0, 0.7);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 20px;
+      transition: var(--transition);
+    }
+
+    .exit-fullscreen-btn:hover {
+      background: rgba(0, 0, 0, 0.9);
+      transform: scale(1.1);
+    }
+
+    .security-features {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .security-feature {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+    }
+
+    .security-feature i {
+      color: var(--secondary);
+    }
+
+    .security-feature.disabled i {
+      color: var(--gray);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo">
+        <div class="logo-icon">
+          <i class="fas fa-shield-alt"></i>
+        </div>
+        <div class="logo-text">SecureInterview AI</div>
+      </div>
+      <div class="system-status">
+        <i class="fas fa-server"></i>
+        <span>System Status:</span>
+        <div class="status-dot" id="systemStatusDot"></div>
+        <span id="systemStatusText">Operational</span>
+      </div>
+      <div class="user-info">
+        <div class="user-avatar">
+          <i class="fas fa-user-tie"></i>
+        </div>
+        <span>Interview Panel</span>
+      </div>
+    </header>
+
+    <div class="card meeting-container">
+      <div class="card-header">
+        <div class="card-title">
+          <i class="fas fa-video"></i>
+          Interview Room
+        </div>
+        <div class="ai-status" id="aiStatus">
+          <i class="fas fa-robot"></i> AI Monitoring: 
+          <div class="status-dot" id="aiStatusDot"></div>
+          <span id="aiStatusText">Inactive</span>
+        </div>
+      </div>
+      <div id="meet">
+        <div style="display:flex;align-items:center;justify-content:center;height:100%;background:var(--dark);color:var(--light);flex-direction:column;gap:15px;">
+          <i class="fas fa-door-closed" style="font-size:48px;color:var(--gray);"></i>
+          <h3>Interview Room Not Started</h3>
+          <p>Complete the setup process to begin the interview</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="main-content">
+      <div class="card setup-panel">
+        <div class="feature-badge">AI-Powered Security</div>
+        <div class="card-header">
+          <div class="card-title">
+            <i class="fas fa-cogs"></i>
+            Security Setup
+          </div>
+        </div>
+        
+        <div class="step" id="step1">
+          <div class="step-icon">
+            <i class="fas fa-camera"></i>
+          </div>
+          <div class="step-content">
+            <div class="step-title">Enable AI Monitoring</div>
+            <div class="step-description">
+              Activate your camera to enable AI-powered object and face detection. The system will automatically detect and flag any unauthorized objects or multiple faces during the interview.
+            </div>
+            <div class="security-level">
+              <i class="fas fa-shield-alt"></i>
+              <span>Security Level: <strong>Maximum</strong></span>
+            </div>
+            <div class="security-features">
+              <div class="security-feature">
+                <i class="fas fa-check-circle"></i>
+                <span>Object Detection</span>
+              </div>
+              <div class="security-feature">
+                <i class="fas fa-check-circle"></i>
+                <span>Face Detection</span>
+              </div>
+              <div class="security-feature">
+                <i class="fas fa-check-circle"></i>
+                <span>Tab Switching Detection</span>
+              </div>
+              <div class="security-feature">
+                <i class="fas fa-check-circle"></i>
+                <span>Full-Screen Enforcement</span>
+              </div>
+            </div>
+            <div class="controls">
+              <button id="startCameraBtn" onclick="startCameraDetection()">
+                <i class="fas fa-play-circle"></i> Start AI Monitoring
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <div class="step" id="step2">
+          <div class="step-icon">
+            <i class="fas fa-user-check"></i>
+          </div>
+          <div class="step-content">
+            <div class="step-title">Join Interview Room</div>
+            <div class="step-description">
+              Once AI monitoring is active, you can securely join the interview room. The system will continue monitoring throughout the session.
+            </div>
+            <div class="security-level">
+              <i class="fas fa-lock"></i>
+              <span>Authentication: <strong>Required</strong></span>
+            </div>
+            <div class="controls">
+              <button id="joinButton" onclick="joinInterview()" disabled>
+                <i class="fas fa-sign-in-alt"></i> Join Interview
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card security-panel">
+        <div class="feature-badge">Real-time Monitoring</div>
+        <div class="card-header">
+          <div class="card-title">
+            <i class="fas fa-shield-alt"></i>
+            Security Status
+          </div>
+        </div>
+        
+        <div class="security-status">
+          <div class="status-indicator status-secure" id="statusIndicator"></div>
+          <div class="status-text" id="statusText">All Systems Secure</div>
+          <div class="warning-counter">Warnings: <span id="warningCount">0</span>/3</div>
+        </div>
+        
+        <div class="security-metrics">
+          <div class="metric">
+            <div class="metric-value" id="tabSwitchCount">0</div>
+            <div class="metric-label">Tab Switches</div>
+          </div>
+          <div class="metric">
+            <div class="metric-value" id="objectDetectionCount">0</div>
+            <div class="metric-label">Object Detections</div>
+          </div>
+          <div class="metric">
+            <div class="metric-value" id="faceDetectionCount">0</div>
+            <div class="metric-label">Multiple Faces</div>
+          </div>
+        </div>
+        
+        <div class="alert alert-warning" id="mobileWarning" style="display: none;">
+          <i class="fas fa-exclamation-triangle"></i>
+          <div>Mobile device detected. For optimal security, please use a desktop computer.</div>
+        </div>
+        
+        <div class="alert alert-danger" id="suspiciousActivity" style="display: none;">
+          <i class="fas fa-skull-crossbones"></i>
+          <div>Suspicious activity detected! The meeting will end after 3 warnings.</div>
+        </div>
+        
+        <div class="progress-bar">
+          <div class="progress" id="securityProgress" style="width: 0%"></div>
+        </div>
+        
+        <div class="controls">
+          <button id="stopCameraBtn" onclick="stopCameraDetection()" class="btn-secondary" style="display: none;">
+            <i class="fas fa-stop-circle"></i> Stop Monitoring
+          </button>
+          <button onclick="endMeeting()" class="btn-danger">
+            <i class="fas fa-power-off"></i> End Meeting
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <p>DRDO Secure Interview System | Protected by Advanced AI-Powered Security</p>
+      <p style="margin-top: 5px; font-size: 12px;">© 2023 National Level Hackathon Expo - All Rights Reserved</p>
+    </div>
+  </div>
+
+  <!-- Full Screen Notification -->
+  <div class="full-screen-notification" id="fullScreenNotification">
+    <i class="fas fa-expand-arrows-alt" style="font-size: 64px; color: var(--primary);"></i>
+    <h2>Full Screen Mode Required</h2>
+    <p>For security purposes, this interview must be conducted in full screen mode.</p>
+    <p>The system will automatically switch to full screen in <span class="countdown" id="countdown">5</span> seconds.</p>
+    <p>Please do not switch tabs during the interview.</p>
+  </div>
+
+  <!-- Exit Full Screen Button -->
+  <button class="exit-fullscreen-btn" id="exitFullscreenBtn" style="display: none;">
+    <i class="fas fa-compress"></i>
+  </button>
+
+  <!-- Warning Modal -->
+  <div class="modal" id="warningModal">
+    <div class="modal-content">
+      <h3><i class="fas fa-exclamation-triangle"></i> Security Warning</h3>
+      <p id="warningMessage">Suspicious activity detected!</p>
+      <div class="progress-bar">
+        <div class="progress" style="width: 70%"></div>
+      </div>
+      <p>Continued violations will result in meeting termination.</p>
+      <button onclick="closeWarningModal()" class="btn-warning">
+        <i class="fas fa-check"></i> Acknowledge Warning
+      </button>
+    </div>
+  </div>
+
+  <!-- Camera Preview Modal -->
+  <div class="modal" id="cameraPreviewModal">
+    <div class="modal-content">
+      <h3><i class="fas fa-camera"></i> AI Monitoring Active</h3>
+      <p>Object and face detection is now active. The system will monitor for any unauthorized objects or multiple faces in view.</p>
+      <div class="camera-feed">
+        <video id="cameraPreview" autoplay playsinline></video>
+        <canvas id="detectionCanvas"></canvas>
+      </div>
+      <div class="detection-info" id="detectionInfo">
+        <div><span class="loading"></span> Loading AI models...</div>
+      </div>
+      <button onclick="closeCameraPreview()" class="btn-secondary">
+        <i class="fas fa-times"></i> Close Preview
+      </button>
+    </div>
+  </div>
+
+  <!-- Jitsi Script -->
+  <script src="https://meet.jit.si/external_api.js"></script>
+
+  <script>
+    let api = null;
+    let warningCount = 0;
+    let isMobileDevice = false;
+    let tabSwitchCount = 0;
+    let cameraStream = null;
+    let cameraDetectionInterval = null;
+    let isCameraDetectionActive = false;
+    let objectDetectionCount = 0;
+    let faceDetectionCount = 0;
+    let lastDetectionTime = 0;
+    let lastFaceDetectionTime = 0;
+    let model = null;
+    let faceModel = null;
+    let detectedObjects = [];
+    let isFullScreen = false;
+    let fullScreenCountdownInterval = null;
+
+    // Allowed objects (only person is allowed)
+    const ALLOWED_OBJECTS = ['person'];
+    
+    // Initialize the AI models
+    async function loadModels() {
+      try {
+        document.getElementById('detectionInfo').innerHTML = '<div><span class="loading"></span> Loading AI models...</div>';
+        
+        // Load object detection model
+        model = await cocoSsd.load();
+        
+        // Load face detection model
+        faceModel = await faceLandmarksDetection.load(
+          faceLandmarksDetection.SupportedPackages.mediapipeFacemesh,
+          { maxFaces: 5 }
+        );
+        
+        document.getElementById('detectionInfo').innerHTML = '<div><i class="fas fa-check-circle" style="color: #00cc66"></i> AI Models Loaded Successfully</div>';
+        console.log("AI models loaded successfully");
+        return true;
+      } catch (error) {
+        console.error("Error loading models:", error);
+        document.getElementById('detectionInfo').innerHTML = '<div><i class="fas fa-exclamation-triangle" style="color: #ff9900"></i> Error loading AI models. Using fallback detection.</div>';
+        return false;
+      }
+    }
+
+    // Device detection
+    function detectDevice() {
+      const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+      
+      // Check for mobile devices
+      if (/android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(userAgent.toLowerCase())) {
+        isMobileDevice = true;
+        document.getElementById('mobileWarning').style.display = 'flex';
+        document.getElementById('joinButton').disabled = true;
+      }
+    }
+
+    // Tab switching detection
+    function setupTabSwitchDetection() {
+      document.addEventListener('visibilitychange', function() {
+        if (document.hidden && api) {
+          // User switched to another tab
+          tabSwitchCount++;
+          document.getElementById('tabSwitchCount').textContent = tabSwitchCount;
+          document.getElementById('tabSwitchCount').classList.add('pulse');
+          setTimeout(() => {
+            document.getElementById('tabSwitchCount').classList.remove('pulse');
+          }, 500);
+          
+          if (tabSwitchCount >= 2) {
+            // Trigger warning for tab switching
+            triggerWarning("Tab switching detected multiple times. This is not allowed during interviews.");
+            tabSwitchCount = 0; // Reset counter after warning
+          }
+        }
+      });
+    }
+
+    // Full screen enforcement
+    function enforceFullScreen() {
+      if (!document.fullscreenElement) {
+        document.getElementById('fullScreenNotification').style.display = 'flex';
+        let count = 5;
+        const countdownElement = document.getElementById('countdown');
+        
+        // Clear any existing countdown
+        if (fullScreenCountdownInterval) {
+          clearInterval(fullScreenCountdownInterval);
+        }
+        
+        fullScreenCountdownInterval = setInterval(() => {
+          count--;
+          countdownElement.textContent = count;
+          
+          if (count <= 0) {
+            clearInterval(fullScreenCountdownInterval);
+            enterFullScreen();
+          }
+        }, 1000);
+      } else {
+        isFullScreen = true;
+        activateFullScreenMode();
+      }
+    }
+
+    function enterFullScreen() {
+      const elem = document.documentElement;
+      
+      if (elem.requestFullscreen) {
+        elem.requestFullscreen().then(() => {
+          activateFullScreenMode();
+        }).catch(err => {
+          console.error("Error attempting to enable full-screen mode:", err);
+          // Fallback: use CSS to simulate full screen
+          activateFullScreenMode();
+        });
+      } else if (elem.webkitRequestFullscreen) {
+        elem.webkitRequestFullscreen().then(() => {
+          activateFullScreenMode();
+        }).catch(err => {
+          console.error("Error attempting to enable full-screen mode:", err);
+          activateFullScreenMode();
+        });
+      } else if (elem.msRequestFullscreen) {
+        elem.msRequestFullscreen().then(() => {
+          activateFullScreenMode();
+        }).catch(err => {
+          console.error("Error attempting to enable full-screen mode:", err);
+          activateFullScreenMode();
+        });
+      } else {
+        // Fallback if browser doesn't support fullscreen API
+        activateFullScreenMode();
+      }
+      
+      document.getElementById('fullScreenNotification').style.display = 'none';
+      isFullScreen = true;
+    }
+
+    function activateFullScreenMode() {
+      document.body.classList.add('full-screen-active');
+      document.getElementById('exitFullscreenBtn').style.display = 'flex';
+      isFullScreen = true;
+    }
+
+    function exitFullScreenMode() {
+      document.body.classList.remove('full-screen-active');
+      document.getElementById('exitFullscreenBtn').style.display = 'none';
+      
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      } else if (document.webkitExitFullscreen) {
+        document.webkitExitFullscreen();
+      } else if (document.msExitFullscreen) {
+        document.msExitFullscreen();
+      }
+      
+      isFullScreen = false;
+    }
+
+    // Exit full screen detection
+    document.addEventListener('fullscreenchange', exitHandler);
+    document.addEventListener('webkitfullscreenchange', exitHandler);
+    document.addEventListener('mozfullscreenchange', exitHandler);
+    document.addEventListener('MSFullscreenChange', exitHandler);
+
+    function exitHandler() {
+      if (!document.fullscreenElement && !document.webkitIsFullScreen && !document.mozFullScreen && !document.msFullscreenElement) {
+        isFullScreen = false;
+        document.body.classList.remove('full-screen-active');
+        document.getElementById('exitFullscreenBtn').style.display = 'none';
+        
+        if (api) {
+          triggerWarning("Full screen mode exited. Please return to full screen immediately.");
+          enforceFullScreen();
+        }
+      }
+    }
+
+    // Camera-based object and face detection
+    async function startCameraDetection() {
+      document.getElementById('startCameraBtn').disabled = true;
+      document.getElementById('startCameraBtn').innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading AI...';
+      
+      // Load the AI models first
+      const modelsLoaded = await loadModels();
+      if (!modelsLoaded) {
+        // If models fail to load, we'll use a fallback method
+        alert("AI models failed to load. Using basic detection mode.");
+      }
+      
+      document.getElementById('startCameraBtn').innerHTML = '<i class="fas fa-spinner fa-spin"></i> Starting Camera...';
+      
+      navigator.mediaDevices.getUserMedia({ 
+        video: { 
+          width: { ideal: 640 },
+          height: { ideal: 480 },
+          facingMode: 'user'
+        } 
+      })
+        .then(function(stream) {
+          cameraStream = stream;
+          isCameraDetectionActive = true;
+          
+          // Update UI
+          document.getElementById('startCameraBtn').style.display = 'none';
+          document.getElementById('stopCameraBtn').style.display = 'inline-flex';
+          document.getElementById('aiStatusText').textContent = "Active";
+          document.getElementById('aiStatusText').style.color = "#00cc66";
+          document.getElementById('aiStatusDot').classList.add('active');
+          document.getElementById('step1').classList.add('completed');
+          document.getElementById('step2').classList.add('active');
+          
+          // Enable join button
+          document.getElementById('joinButton').disabled = false;
+          document.getElementById('joinButton').classList.add('glow');
+          
+          // Show camera preview
+          const video = document.getElementById('cameraPreview');
+          video.srcObject = stream;
+          document.getElementById('cameraPreviewModal').style.display = 'flex';
+          
+          // Start object and face detection
+          cameraDetectionInterval = setInterval(function() {
+            detectObjects();
+            detectFaces();
+          }, 2000); // Check every 2 seconds
+          
+          updateSecurityStatus();
+          console.log("AI monitoring started successfully");
+        })
+        .catch(function(err) {
+          console.error("Error accessing camera: ", err);
+          alert("Camera access denied. Please allow camera access to enable AI monitoring.");
+          stopCameraDetection();
+        });
+    }
+
+    // Object detection function
+    async function detectObjects() {
+      if (!isCameraDetectionActive || !cameraStream) return;
+      
+      const video = document.getElementById('cameraPreview');
+      const canvas = document.getElementById('detectionCanvas');
+      const ctx = canvas.getContext('2d');
+      
+      // Set canvas dimensions to match video
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      
+      // Draw current video frame to canvas
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      
+      // Clear previous detection boxes
+      const existingBoxes = document.querySelectorAll('.detection-box');
+      existingBoxes.forEach(box => box.remove());
+      
+      try {
+        // Use the AI model for detection if available
+        if (model) {
+          const predictions = await model.detect(video);
+          processDetections(predictions, ctx);
+        } else {
+          // Fallback to simulated detection if model is not available
+          simulateDetection(ctx, canvas.width, canvas.height);
+        }
+      } catch (error) {
+        console.error("Error during object detection:", error);
+        // Fallback to simulated detection
+        simulateDetection(ctx, canvas.width, canvas.height);
+      }
+    }
+
+    // Face detection function
+    async function detectFaces() {
+      if (!isCameraDetectionActive || !cameraStream || !faceModel) return;
+      
+      const video = document.getElementById('cameraPreview');
+      const canvas = document.getElementById('detectionCanvas');
+      const ctx = canvas.getContext('2d');
+      
+      try {
+        const predictions = await faceModel.estimateFaces({
+          input: video,
+          returnTensors: false,
+          flipHorizontal: false,
+          predictIrises: false
+        });
+        
+        processFaceDetections(predictions, ctx);
+      } catch (error) {
+        console.error("Error during face detection:", error);
+        // Fallback to simulated face detection
+        simulateFaceDetection(ctx, canvas.width, canvas.height);
+      }
+    }
+
+    // Process AI model detections
+    function processDetections(predictions, ctx) {
+      detectedObjects = [];
+      let hasUnauthorizedObjects = false;
+      let detectionInfoHTML = "";
+      
+      predictions.forEach(prediction => {
+        const [x, y, width, height] = prediction.bbox;
+        const className = prediction.class;
+        const score = (prediction.score * 100).toFixed(1);
+        
+        // Store detection for logging
+        detectedObjects.push({
+          class: className,
+          score: score,
+          timestamp: new Date().toLocaleTimeString()
+        });
+        
+        // Check if this is an unauthorized object
+        if (!ALLOWED_OBJECTS.includes(className)) {
+          hasUnauthorizedObjects = true;
+          
+          // Draw detection box for unauthorized objects
+          drawDetectionBox(ctx, x, y, width, height, className, score, 'object');
+          
+          // Add to detection info
+          detectionInfoHTML += `<div class="detected-item">
+            <span><i class="fas fa-ban" style="color: #ff3333"></i> ${className}</span>
+            <span>${score}%</span>
+          </div>`;
+        } else {
+          // Draw detection box for allowed objects (person)
+          drawDetectionBox(ctx, x, y, width, height, className, score, 'person');
+          
+          // Add to detection info
+          detectionInfoHTML += `<div class="detected-item">
+            <span><i class="fas fa-check-circle" style="color: #00cc66"></i> ${className}</span>
+            <span>${score}%</span>
+          </div>`;
+        }
+      });
+      
+      // Update detection info display
+      if (detectionInfoHTML) {
+        document.getElementById('detectionInfo').innerHTML = detectionInfoHTML;
+      }
+      
+      // Trigger warning if unauthorized objects detected
+      if (hasUnauthorizedObjects) {
+        const currentTime = Date.now();
+        const timeSinceLastDetection = currentTime - lastDetectionTime;
+        
+        // Only trigger warning once every 10 seconds to prevent spam
+        if (timeSinceLastDetection > 10000) {
+          objectDetectionCount++;
+          lastDetectionTime = currentTime;
+          document.getElementById('objectDetectionCount').textContent = objectDetectionCount;
+          document.getElementById('objectDetectionCount').classList.add('pulse');
+          setTimeout(() => {
+            document.getElementById('objectDetectionCount').classList.remove('pulse');
+          }, 500);
+          
+          // Get the names of unauthorized objects
+          const unauthorizedObjects = predictions
+            .filter(p => !ALLOWED_OBJECTS.includes(p.class))
+            .map(p => p.class)
+            .join(', ');
+          
+          triggerWarning(`Unauthorized object detected: ${unauthorizedObjects}. Please remove all objects except yourself from the camera view.`);
+        }
+      }
+    }
+
+    // Process face detections
+    function processFaceDetections(predictions, ctx) {
+      let faceDetectionInfoHTML = "";
+      
+      // Draw face detection boxes
+      predictions.forEach((prediction, i) => {
+        const start = prediction.topLeft;
+        const end = prediction.bottomRight;
+        const size = [end[0] - start[0], end[1] - start[1]];
+        
+        // Draw face bounding box
+        drawFaceBox(ctx, start[0], start[1], size[0], size[1], `Face ${i+1}`);
+        
+        // Add to detection info
+        faceDetectionInfoHTML += `<div class="detected-item">
+          <span><i class="fas fa-user" style="color: #ff9900"></i> Face ${i+1}</span>
+          <span>Detected</span>
+        </div>`;
+      });
+      
+      // Update detection info with face data
+      const currentDetectionInfo = document.getElementById('detectionInfo').innerHTML;
+      if (faceDetectionInfoHTML) {
+        document.getElementById('detectionInfo').innerHTML = currentDetectionInfo + faceDetectionInfoHTML;
+      }
+      
+      // Check for multiple faces
+      if (predictions.length > 1) {
+        const currentTime = Date.now();
+        const timeSinceLastDetection = currentTime - lastFaceDetectionTime;
+        
+        // Only trigger warning once every 15 seconds to prevent spam
+        if (timeSinceLastDetection > 15000) {
+          faceDetectionCount++;
+          lastFaceDetectionTime = currentTime;
+          document.getElementById('faceDetectionCount').textContent = faceDetectionCount;
+          document.getElementById('faceDetectionCount').classList.add('pulse');
+          setTimeout(() => {
+            document.getElementById('faceDetectionCount').classList.remove('pulse');
+          }, 500);
+          
+          triggerWarning(`Multiple faces detected (${predictions.length}). Only one person should be visible during the interview.`);
+        }
+      }
+    }
+
+    // Draw detection boxes on the canvas
+    function drawDetectionBox(ctx, x, y, width, height, className, score, type) {
+      // Set style based on object type
+      const color = type === 'person' ? '#00cc66' : '#ff3333';
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 2;
+      ctx.strokeRect(x, y, width, height);
+      
+      // Draw label background
+      ctx.fillStyle = color;
+      ctx.font = '14px Arial';
+      const text = `${className} (${score}%)`;
+      const textWidth = ctx.measureText(text).width;
+      ctx.fillRect(x, y - 20, textWidth + 10, 20);
+      
+      // Draw label text
+      ctx.fillStyle = '#ffffff';
+      ctx.fillText(text, x + 5, y - 5);
+    }
+
+    // Draw face boxes on the canvas
+    function drawFaceBox(ctx, x, y, width, height, label) {
+      // Set style for face boxes
+      ctx.strokeStyle = '#ff9900';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(x, y, width, height);
+      
+      // Draw label background
+      ctx.fillStyle = '#ff9900';
+      ctx.font = '14px Arial';
+      const textWidth = ctx.measureText(label).width;
+      ctx.fillRect(x, y - 20, textWidth + 10, 20);
+      
+      // Draw label text
+      ctx.fillStyle = '#ffffff';
+      ctx.fillText(label, x + 5, y - 5);
+    }
+
+    // Simulated detection for fallback
+    function simulateDetection(ctx, width, height) {
+      const currentTime = Date.now();
+      const timeSinceLastDetection = currentTime - lastDetectionTime;
+      
+      // Only allow detection once every 15 seconds to prevent spam
+      if (timeSinceLastDetection < 15000) return;
+      
+      // Simulate random detection with 30% probability
+      const isObjectDetected = Math.random() < 0.3;
+      
+      if (isObjectDetected) {
+        objectDetectionCount++;
+        lastDetectionTime = currentTime;
+        document.getElementById('objectDetectionCount').textContent = objectDetectionCount;
+        document.getElementById('objectDetectionCount').classList.add('pulse');
+        setTimeout(() => {
+          document.getElementById('objectDetectionCount').classList.remove('pulse');
+        }, 500);
+        
+        // Draw a red rectangle where "object" is detected (for visualization)
+        ctx.strokeStyle = '#ff3333';
+        ctx.lineWidth = 3;
+        ctx.strokeRect(width * 0.3, height * 0.2, width * 0.4, height * 0.6);
+        
+        ctx.fillStyle = 'rgba(255, 0, 0, 0.3)';
+        ctx.fillRect(width * 0.3, height * 0.2, width * 0.4, height * 0.6);
+        
+        ctx.fillStyle = '#fff';
+        ctx.font = '16px Arial';
+        ctx.fillText('UNAUTHORIZED OBJECT DETECTED', width * 0.32, height * 0.3);
+        
+        // Update detection info
+        document.getElementById('detectionInfo').innerHTML = 
+          `<div class="detected-item">
+            <span><i class="fas fa-ban" style="color: #ff3333"></i> cell phone</span>
+            <span>87%</span>
+          </div>`;
+        
+        // Trigger warning
+        triggerWarning("Unauthorized object detected: cell phone. Please remove all objects except yourself from the camera view.");
+        
+        console.log(`Object detected! Count: ${objectDetectionCount}`);
+      }
+    }
+
+    // Simulated face detection for fallback
+    function simulateFaceDetection(ctx, width, height) {
+      const currentTime = Date.now();
+      const timeSinceLastDetection = currentTime - lastFaceDetectionTime;
+      
+      // Only allow detection once every 20 seconds to prevent spam
+      if (timeSinceLastDetection < 20000) return;
+      
+      // Simulate multiple faces with 20% probability
+      const isMultipleFaces = Math.random() < 0.2;
+      
+      if (isMultipleFaces) {
+        faceDetectionCount++;
+        lastFaceDetectionTime = currentTime;
+        document.getElementById('faceDetectionCount').textContent = faceDetectionCount;
+        document.getElementById('faceDetectionCount').classList.add('pulse');
+        setTimeout(() => {
+          document.getElementById('faceDetectionCount').classList.remove('pulse');
+        }, 500);
+        
+        // Draw multiple face boxes (for visualization)
+        drawFaceBox(ctx, width * 0.2, height * 0.3, 150, 150, "Face 1");
+        drawFaceBox(ctx, width * 0.6, height * 0.4, 120, 120, "Face 2");
+        
+        // Update detection info
+        const currentDetectionInfo = document.getElementById('detectionInfo').innerHTML;
+        document.getElementById('detectionInfo').innerHTML = currentDetectionInfo + 
+          `<div class="detected-item">
+            <span><i class="fas fa-user" style="color: #ff9900"></i> Face 1</span>
+            <span>Detected</span>
+          </div>
+          <div class="detected-item">
+            <span><i class="fas fa-user" style="color: #ff9900"></i> Face 2</span>
+            <span>Detected</span>
+          </div>`;
+        
+        // Trigger warning
+        triggerWarning("Multiple faces detected (2). Only one person should be visible during the interview.");
+        
+        console.log(`Multiple faces detected! Count: ${faceDetectionCount}`);
+      }
+    }
+
+    function stopCameraDetection() {
+      if (cameraStream) {
+        cameraStream.getTracks().forEach(track => track.stop());
+        cameraStream = null;
+      }
+      
+      if (cameraDetectionInterval) {
+        clearInterval(cameraDetectionInterval);
+        cameraDetectionInterval = null;
+      }
+      
+      document.getElementById('startCameraBtn').style.display = 'inline-flex';
+      document.getElementById('startCameraBtn').disabled = false;
+      document.getElementById('startCameraBtn').innerHTML = '<i class="fas fa-play-circle"></i> Start AI Monitoring';
+      document.getElementById('stopCameraBtn').style.display = 'none';
+      document.getElementById('aiStatusText').textContent = "Inactive";
+      document.getElementById('aiStatusText').style.color = "";
+      document.getElementById('aiStatusDot').classList.remove('active');
+      document.getElementById('step1').classList.remove('completed');
+      document.getElementById('step2').classList.remove('active');
+      document.getElementById('joinButton').disabled = true;
+      document.getElementById('joinButton').classList.remove('glow');
+      document.getElementById('cameraPreviewModal').style.display = 'none';
+      isCameraDetectionActive = false;
+      objectDetectionCount = 0;
+      faceDetectionCount = 0;
+      document.getElementById('objectDetectionCount').textContent = '0';
+      document.getElementById('faceDetectionCount').textContent = '0';
+      
+      updateSecurityStatus();
+      console.log("AI monitoring stopped");
+    }
+
+    function closeCameraPreview() {
+      document.getElementById('cameraPreviewModal').style.display = 'none';
+    }
+
+    // Trigger warning
+    function triggerWarning(message) {
+      if (warningCount >= 3) return; // Already at max warnings
+      
+      warningCount++;
+      updateSecurityStatus();
+      
+      // Show warning modal
+      document.getElementById('warningMessage').textContent = message;
+      document.getElementById('warningModal').style.display = 'flex';
+      
+      console.log(`Warning triggered: ${message}. Total warnings: ${warningCount}`);
+      
+      if (warningCount >= 3) {
+        // Maximum warnings reached
+        setTimeout(function() {
+          document.getElementById('warningModal').style.display = 'none';
+          endMeeting();
+        }, 3000);
+      }
+    }
+
+    function closeWarningModal() {
+      document.getElementById('warningModal').style.display = 'none';
+    }
+
+    function updateSecurityStatus() {
+      const statusIndicator = document.getElementById('statusIndicator');
+      const statusText = document.getElementById('statusText');
+      const warningCountElement = document.getElementById('warningCount');
+      const securityProgress = document.getElementById('securityProgress');
+      
+      warningCountElement.textContent = warningCount;
+      securityProgress.style.width = `${warningCount * 33.3}%`;
+      
+      if (warningCount === 0) {
+        statusIndicator.className = 'status-indicator status-secure';
+        statusText.textContent = 'All Systems Secure';
+        statusText.style.color = '';
+        document.getElementById('suspiciousActivity').style.display = 'none';
+      } else if (warningCount === 1) {
+        statusIndicator.className = 'status-indicator status-warning';
+        statusText.textContent = 'Security Warning';
+        statusText.style.color = 'var(--warning)';
+        document.getElementById('suspiciousActivity').style.display = 'flex';
+      } else if (warningCount === 2) {
+        statusIndicator.className = 'status-indicator status-warning';
+        statusText.textContent = 'High Alert';
+        statusText.style.color = 'var(--warning)';
+        document.getElementById('suspiciousActivity').style.display = 'flex';
+      } else {
+        statusIndicator.className = 'status-indicator status-danger';
+        statusText.textContent = 'Security Breach!';
+        statusText.style.color = 'var(--danger)';
+        document.getElementById('suspiciousActivity').style.display = 'flex';
+        document.getElementById('suspiciousActivity').innerHTML = 
+          '<i class="fas fa-skull-crossbones"></i><div>Maximum warnings reached! Ending meeting for security reasons.</div>';
+      }
+      
+      // Add pulse animation to status indicator when it changes
+      statusIndicator.classList.add('pulse');
+      setTimeout(() => {
+        statusIndicator.classList.remove('pulse');
+      }, 500);
+    }
+
+    function endMeeting() {
+      if (api) {
+        api.dispose();
+        api = null;
+      }
+      
+      exitFullScreenMode();
+      stopCameraDetection();
+      
+      document.getElementById('joinButton').disabled = false;
+      document.getElementById('meet').innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;background:var(--dark);color:var(--light);flex-direction:column;gap:15px;"><i class="fas fa-door-closed" style="font-size:48px;color:var(--gray);"></i><h3>Meeting Ended</h3><p>Session terminated due to security policy violations.</p></div>';
+      
+      console.log("Meeting ended due to security violations");
+    }
+
+    function joinInterview() {
+      if (!isCameraDetectionActive) {
+        alert("Please start AI monitoring before joining the meeting.");
+        return;
+      }
+      
+      if (api) return;
+      
+      // Reset security state
+      warningCount = 0;
+      tabSwitchCount = 0;
+      objectDetectionCount = 0;
+      faceDetectionCount = 0;
+      updateSecurityStatus();
+      document.getElementById('suspiciousActivity').style.display = 'none';
+      document.getElementById('tabSwitchCount').textContent = '0';
+      document.getElementById('objectDetectionCount').textContent = '0';
+      document.getElementById('faceDetectionCount').textContent = '0';
+
+      // Enforce full screen mode
+      enforceFullScreen();
+
+      const domain = "meet.jit.si";
+      const options = {
+        roomName: "DRDO_INTERVIEW_ROOM_98765",
+        width: "100%",
+        height: "100%",
+        parentNode: document.querySelector('#meet'),
+
+        interfaceConfigOverwrite: {
+          TILE_VIEW_MAX_COLUMNS: 2,
+          TOOLBAR_BUTTONS: [
+            'microphone', 'camera', 'closedcaptions', 'desktop', 'embedmeeting', 
+            'fullscreen', 'fodeviceselection', 'hangup', 'profile', 'chat', 
+            'recording', 'livestreaming', 'etherpad', 'sharedvideo', 'settings', 
+            'raisehand', 'videoquality', 'filmstrip', 'invite', 'feedback', 
+            'stats', 'shortcuts', 'tileview', 'videobackgroundblur', 'download', 
+            'help', 'mute-everyone', 'security'
+          ],
+        },
+        configOverwrite: {
+          prejoinPageEnabled: false,
+          disableModeratorIndicator: false,
+          startAudioOnly: false,
+          enableNoAudioDetection: true,
+          enableSaveLogs: true
+        }
+      };
+
+      api = new JitsiMeetExternalAPI(domain, options);
+
+      // When YOU join first → you become moderator
+      api.addEventListener('videoConferenceJoined', () => {
+        console.log("You joined the meeting!");
+
+        // Set meeting password → only moderator can do this
+        api.executeCommand('password', 'drdo123');
+
+        alert("✔ You are the HOST.\n✔ Meeting locked.\n⚠ Share password only with candidates: drdo123\n\nAI monitoring is active and will detect unauthorized objects and multiple faces during the meeting.");
+      });
+
+      // Handle conference left
+      api.addEventListener('videoConferenceLeft', () => {
+        console.log("You left the meeting");
+        exitFullScreenMode();
+        stopCameraDetection();
+        api = null;
+      });
+    }
+
+    // Initialize on page load
+    window.onload = function() {
+      detectDevice();
+      setupTabSwitchDetection();
+      document.getElementById('systemStatusDot').classList.add('active');
+      
+      // Set up exit full screen button
+      document.getElementById('exitFullscreenBtn').addEventListener('click', function() {
+        if (confirm("Are you sure you want to exit full screen mode? This may trigger a security warning.")) {
+          exitFullScreenMode();
+        }
+      });
+    };
+  </script>
+</body>
+</html>

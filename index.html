@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DRDO Selection AI | Defense Research Simulation Platform</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800&family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    
+    <!-- Profile dropdown styles (can be moved to style2-demo.css) -->
+    <style>
+        /* Basic profile area */
+        .user-display {
+            display: none !important;  /* Changed: added !important and set to none */
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            position: relative;
+            padding: 6px 8px;
+            border-radius: 8px;
+            transition: background .15s ease;
+            background: rgba(255,255,255,0.03);
+        }
+
+        .user-display.active {
+            display: flex !important;  /* Show only when .active class is added */
+        }
+
+        .user-display:hover {
+            background: rgba(255,255,255,0.06);
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.06);
+            border-radius: 50%;
+            font-size: 18px;
+            color: #fff;
+        }
+
+        .user-info { display:flex; flex-direction: column; line-height: 1; }
+        .user-info .username { font-weight: 600; font-size: 14px; }
+        .user-info .user-status { font-size: 11px; opacity: 0.9; color: #b8b8b8; }
+
+        /* Dropdown menu */
+        .user-menu {
+            display: none;
+            position: absolute;
+            top: calc(100% + 8px);
+            right: 0;
+            min-width: 160px;
+            background: #0f1724;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 8px 24px rgba(0,0,0,.45);
+            z-index: 9999;
+            padding: 6px 0;
+        }
+
+        .user-menu .menu-item {
+            display: block;
+            padding: 10px 12px;
+            color: #e6e6e6;
+            text-decoration: none;
+            font-size: 14px;
+            border: none;
+            width: 100%;
+            text-align: left;
+            background: transparent;
+            cursor: pointer;
+        }
+
+        .user-menu .menu-item:hover {
+            background: rgba(255,255,255,0.03);
+        }
+
+        /* Show on hover for desktop */
+        .user-display:hover .user-menu,
+        .user-display:focus-within .user-menu,
+        .user-display.open .user-menu {
+            display: block;
+        }
+
+        /* Small-screen UX: show on click (open class toggled in JS) */
+        @media (max-width: 768px) {
+            .user-display:hover .user-menu { display: none; }
+        }
+
+        /* Ensure user-display is hidden by default and only shown when .active is present */
+        .user-display { display: none !important; }
+        .user-display.active { display: flex !important; }
+        /* Hide the online badge by default; shown only when logged in */
+        .user-status { display: none; }
+        .user-display.active .user-status { display: inline-block; }
+    </style>
+</head>
+<body>
+    <!-- Matrix Background -->
+    <div class="matrix-bg" id="matrixBg"></div>
+    
+    <!-- Animated Grid -->
+    <div class="animated-grid"></div>
+    
+    <!-- 3D Particles -->
+    <div class="particles-3d" id="particles3d"></div>
+    
+    <!-- Glowing Orbs -->
+    <div class="glowing-orbs">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="glass-nav">
+        <div class="nav-container">
+            <!-- Logo with 3D Effect -->
+            <div class="nav-logo">
+                <div class="logo-3d-wrapper">
+                    <div class="logo-3d" id="logo3d">
+                        <div class="logo-side front">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div class="logo-side back">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <div class="logo-side left"></div>
+                        <div class="logo-side right"></div>
+                        <div class="logo-side top"></div>
+                        <div class="logo-side bottom"></div>
+                    </div>
+                </div>
+                <div class="logo-text">
+                    <h1 class="logo-title">DRDO<span class="ai-highlight"> AI </span>SELECT</h1>
+                    <p class="logo-subtitle">Advanced AI APPLICANT Defense Simulation Platform</p>
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <div class="nav-menu">
+                <a href="#hero" class="nav-item active">
+                    <span class="nav-indicator"></span>
+                    <span class="nav-text">Home</span>
+                </a>
+                <a href="#modules" class="nav-item">
+                    <span class="nav-indicator"></span>
+                    <span class="nav-text">Modules</span>
+                </a>
+                <a href="#features" class="nav-item">
+                    <span class="nav-indicator"></span>
+                    <span class="nav-text">Features</span>
+                </a>
+                <a href="#analytics" class="nav-item">
+                    <span class="nav-indicator"></span>
+                    <span class="nav-text">Analytics</span>
+                </a>
+                <a href="#contact" class="nav-item">
+                    <span class="nav-indicator"></span>
+                    <span class="nav-text">Contact</span>
+                </a>
+            </div>
+
+            <!-- CTA Buttons - Updated for User Display -->
+            <div class="nav-cta">
+                <!-- User Display Area (Hidden by default) -->
+                <div class="user-display" id="userDisplay" tabindex="0" aria-haspopup="true" aria-expanded="false">
+                    <div class="user-avatar">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <div class="user-info">
+                        <span class="username" id="displayUsername">Guest</span>
+                        <span class="user-status" id="userStatus" style="display:none;">
+                            <i class="fas fa-circle online"></i> Online
+                        </span>
+                    </div>
+
+                    <!-- Dropdown Menu -->
+                    <div class="user-menu" id="userMenu" role="menu" aria-hidden="true">
+                        <!-- <a class="menu-item" id="viewProfile" href="#">Profile</a> -->
+                        <button class="menu-item" id="logoutBtn" type="button">Logout</button>
+                    </div>
+                </div>
+                
+                <button class="btn btn-glass" id="loginBtn">
+                    <i class="fas fa-sign-in-alt"></i>
+                    <span>Login</span>
+                </button>
+                <button class="btn btn-gradient" id="demoBtn">
+                    <i class="fas fa-play"></i>
+                    <span>Live Demo</span>
+                </button>
+            </div>
+
+            <!-- Mobile Menu Toggle -->
+            <button class="menu-toggle" id="menuToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section" id="hero">
+        <div class="hero-container">
+            <!-- Animated Text -->
+            <div class="hero-text">
+                <div class="badge">
+                    <i class="fas fa-star"></i>
+                    <span>DRDO Certified Platform</span>
+                </div>
+                
+                <h1 class="hero-title">
+                    <span class="text-gradient">Advanced AI</span>
+                    <span class="text-reveal" id="textReveal"></span>
+                    <span class="cursor">|</span>
+                </h1>
+                
+                <p class="hero-description">
+                    Experience the future of defense research selection with our AI-powered simulation platform. 
+                    Advanced algorithms, real-time analytics, and intelligent feedback for DRDO aspirants.
+                </p>
+
+                <!-- Interactive Stats -->
+                <div class="hero-stats">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-user-graduate"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-number" data-count="12800">0</div>
+                            <div class="stat-label">Trained Candidates</div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-number" data-count="94.3">0<span>%</span></div>
+                            <div class="stat-label">Success Rate</div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-number" data-count="5000">0<span>+</span></div>
+                            <div class="stat-label">Hours Content</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CTA Buttons -->
+                <div class="hero-cta">
+                    <button class="btn btn-primary btn-hero" id="startSimulation">
+                        <span class="btn-content">
+                            <i class="fas fa-play-circle"></i>
+                            <span>Start Free Simulation</span>
+                        </span>
+                        <div class="btn-glow"></div>
+                    </button>
+                    
+                    <button class="btn btn-outline btn-hero" id="watchVideo">
+                        <i class="fas fa-video"></i>
+                        <span>Watch Demo Video</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 3D Dashboard -->
+            <div class="hero-visual">
+                <div class="dashboard-3d" id="dashboard3d">
+                    <div class="dashboard-container">
+                        <div class="dashboard-card">
+                            <div class="dashboard-header">
+                                <div class="dashboard-title">
+                                    <i class="fas fa-brain"></i>
+                                    <span>AI Performance Dashboard</span>
+                                </div>
+                                <div class="dashboard-status">
+                                    <div class="status-indicator active"></div>
+                                    <span>Live Analysis</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Animated Chart -->
+                            <div class="dashboard-chart">
+                                <div class="chart-container">
+                                    <canvas id="performanceChart"></canvas>
+                                </div>
+                                <div class="chart-points">
+                                    <div class="point point-1" data-value="85"></div>
+                                    <div class="point point-2" data-value="72"></div>
+                                    <div class="point point-3" data-value="88"></div>
+                                    <div class="point point-4" data-value="91"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="dashboard-metrics">
+                                <div class="metric">
+                                    <div class="metric-label">Current Score</div>
+                                    <div class="metric-value">85%</div>
+                                </div>
+                                <div class="metric">
+                                    <div class="metric-label">Improvement</div>
+                                    <div class="metric-value">+24%</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Floating Elements -->
+                        <div class="floating-tag tag-1">
+                            <i class="fas fa-robot"></i>
+                            <span>AI-Powered</span>
+                        </div>
+                        <div class="floating-tag tag-2">
+                            <i class="fas fa-bolt"></i>
+                            <span>Real-time</span>
+                        </div>
+                        <div class="floating-tag tag-3">
+                            <i class="fas fa-shield-alt"></i>
+                            <span>Secure</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Scroll Indicator -->
+        <div class="scroll-indicator">
+            <div class="mouse">
+                <div class="wheel"></div>
+            </div>
+            <span>Explore Platform</span>
+        </div>
+    </section>
+
+    <!-- Modules Section -->
+    <section class="modules-section" id="modules">
+        <div class="section-container">
+            <div class="section-header">
+                <div class="section-title">
+                    <div class="title-line"></div>
+                    <h2>Selection Process <span class="highlight">Modules</span></h2>
+                    <p class="section-subtitle">Comprehensive simulation modules for DRDO selection stages</p>
+                </div>
+            </div>
+
+            <!-- Interactive Cards -->
+            <div class="modules-grid">
+                <!-- Card 1 - Round 1 -->
+                <a href="DRDO-Round1-Main.html" class="module-card" data-aos="fade-up">
+                    <div class="card-inner">
+                        <div class="card-front">
+                            <div class="card-header">
+                                <div class="card-badge">Round 1</div>
+                                <div class="card-progress">
+                                    <div class="progress-ring" data-progress="75">
+                                        <svg width="60" height="60">
+                                            <circle cx="30" cy="30" r="25"></circle>
+                                            <circle cx="30" cy="30" r="25"></circle>
+                                        </svg>
+                                        <span>75%</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-icon">
+                                <i class="fas fa-clipboard-check"></i>
+                            </div>
+                            <h3 class="card-title">Technical Screening</h3>
+                            <p class="card-description">
+                                AI-powered aptitude test with adaptive difficulty and detailed analytics
+                            </p>
+                            <div class="card-features">
+                                <span class="feature">Adaptive Questions</span>
+                                <span class="feature">Time Management</span>
+                                <span class="feature">Detailed Analysis</span>
+                            </div>
+                        </div>
+                        <div class="card-back">
+                            <h4>Start Simulation</h4>
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                    </div>
+                    <div class="card-glow"></div>
+                </a>
+
+                <!-- Card 2 - Interview -->
+                <a href="interview_Round2_Main.html" class="module-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="card-inner">
+                        <div class="card-front">
+                            <div class="card-header">
+                                <div class="card-badge">Round 2</div>
+                                <div class="ai-indicator">
+                                    <i class="fas fa-microchip"></i>
+                                    <span>AI Interviewer</span>
+                                </div>
+                            </div>
+                            <div class="card-icon">
+                                <i class="fas fa-comments"></i>
+                            </div>
+                            <h3 class="card-title">AI Interview Simulation</h3>
+                            <p class="card-description">
+                                Practice with intelligent AI interviewer with real-time feedback
+                            </p>
+                            <div class="card-analytics">
+                                <div class="analytic">
+                                    <span>Speech Analysis</span>
+                                    <div class="bar">
+                                        <div class="fill" style="width: 85%"></div>
+                                    </div>
+                                </div>
+                                <div class="analytic">
+                                    <span>Content Score</span>
+                                    <div class="bar">
+                                        <div class="fill" style="width: 78%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-back">
+                            <h4>Start Interview</h4>
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                    </div>
+                    <div class="card-glow"></div>
+                </a>
+
+                <!-- Card 3 - Resume -->
+                <a href="resume.html" class="module-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="card-inner">
+                        <div class="card-front">
+                            <div class="card-header">
+                                <div class="card-badge">Resume</div>
+                                <div class="ai-score">
+                                    <span>AI Score</span>
+                                    <strong>82/100</strong>
+                                </div>
+                            </div>
+                            <div class="card-icon">
+                                <i class="fas fa-file-alt"></i>
+                            </div>
+                            <h3 class="card-title">Resume Intelligence</h3>
+                            <p class="card-description">
+                                AI-powered resume analysis with optimization suggestions
+                            </p>
+                            <div class="improvement-tips">
+                                <div class="tip">
+                                    <i class="fas fa-check"></i>
+                                    <span>Keyword Optimization</span>
+                                </div>
+                                <div class="tip">
+                                    <i class="fas fa-check"></i>
+                                    <span>Format Enhancement</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-back">
+                            <h4>Analyze Resume</h4>
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                    </div>
+                    <div class="card-glow"></div>
+                </a>
+
+                <!-- Card 4 - Question Bank -->
+                <a href="qb2.html" class="module-card" data-aos="fade-up" data-aos-delay="300">
+                    <div class="card-inner">
+                        <div class="card-front">
+                            <div class="card-header">
+                                <div class="card-badge">Practice</div>
+                                <div class="question-count">
+                                    <strong>5,000+</strong>
+                                    <span>Questions</span>
+                                </div>
+                            </div>
+                            <div class="card-icon">
+                                <i class="fas fa-database"></i>
+                            </div>
+                            <h3 class="card-title">Question Bank</h3>
+                            <p class="card-description">
+                                Domain-based questions with adaptive difficulty and solutions
+                            </p>
+                            <div class="domains">
+                                <span class="domain">Aerospace</span>
+                                <span class="domain">Electronics</span>
+                                <span class="domain">Computer Science</span>
+                            </div>
+                        </div>
+                        <div class="card-back">
+                            <h4>Start Practice</h4>
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                    </div>
+                    <div class="card-glow"></div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- AI Features Section -->
+    <section class="ai-features" id="features">
+        <div class="section-container">
+            <div class="section-header">
+                <h2>Advanced <span class="highlight">AI Capabilities</span></h2>
+                <p class="section-subtitle">Powered by cutting-edge artificial intelligence technology</p>
+            </div>
+
+            <div class="features-grid">
+                <!-- Feature 1 -->
+                <div class="feature-card" data-aos="zoom-in">
+                    <div class="feature-visual">
+                        <div class="neural-animation">
+                            <div class="node"></div>
+                            <div class="node"></div>
+                            <div class="node"></div>
+                            <div class="connection"></div>
+                            <div class="connection"></div>
+                            <div class="connection"></div>
+                        </div>
+                    </div>
+                    <div class="feature-content">
+                        <h3>Deep Learning Analysis</h3>
+                        <p>Advanced neural networks analyze responses with precision matching DRDO standards</p>
+                    </div>
+                </div>
+
+                <!-- Feature 2 -->
+                <div class="feature-card" data-aos="zoom-in" data-aos-delay="100">
+                    <div class="feature-visual">
+                        <div class="wave-animation">
+                            <div class="wave"></div>
+                            <div class="wave"></div>
+                            <div class="wave"></div>
+                        </div>
+                    </div>
+                    <div class="feature-content">
+                        <h3>Real-time Evaluation</h3>
+                        <p>Instant feedback and performance tracking during simulation sessions</p>
+                    </div>
+                </div>
+
+                <!-- Feature 3 -->
+                <div class="feature-card" data-aos="zoom-in" data-aos-delay="200">
+                    <div class="feature-visual">
+                        <div class="hologram-animation">
+                            <div class="hologram"></div>
+                        </div>
+                    </div>
+                    <div class="feature-content">
+                        <h3>Adaptive Difficulty</h3>
+                        <p>Intelligent system adjusts question difficulty based on performance patterns</p>
+                    </div>
+                </div>
+
+                <!-- Feature 4 -->
+                <div class="feature-card" data-aos="zoom-in" data-aos-delay="300">
+                    <div class="feature-visual">
+                        <div class="pulse-animation">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                    </div>
+                    <div class="feature-content">
+                        <h3>Military-grade Security</h3>
+                        <p>Enterprise-level security with end-to-end encryption for all data</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Analytics Dashboard Preview -->
+    <section class="analytics-section" id="analytics">
+        <div class="section-container">
+            <div class="section-header">
+                <h2>Advanced <span class="highlight">Performance Analytics</span></h2>
+                <p class="section-subtitle">Comprehensive insights and improvement tracking</p>
+            </div>
+
+            <div class="analytics-dashboard">
+                <!-- Progress Chart -->
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h3>Performance Progress</h3>
+                        <div class="chart-score">85%</div>
+                    </div>
+                    <div class="chart-body">
+                        <canvas id="analyticsChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Metrics -->
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-icon">
+                            <i class="fas fa-trophy"></i>
+                        </div>
+                        <div class="metric-content">
+                            <div class="metric-value">94%</div>
+                            <div class="metric-label">Success Rate</div>
+                        </div>
+                    </div>
+                    
+                    <div class="metric-card">
+                        <div class="metric-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="metric-content">
+                            <div class="metric-value">+24%</div>
+                            <div class="metric-label">Improvement</div>
+                        </div>
+                    </div>
+                    
+                    <div class="metric-card">
+                        <div class="metric-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="metric-content">
+                            <div class="metric-value">48h</div>
+                            <div class="metric-label">Time Spent</div>
+                        </div>
+                    </div>
+                    
+                    <div class="metric-card">
+                        <div class="metric-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="metric-content">
+                            <div class="metric-value">8/12</div>
+                            <div class="metric-label">Modules Completed</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section" id="contact">
+        <div class="section-container">
+            <div class="cta-content">
+                <h2>Start Your DRDO Journey Today</h2>
+                <p class="cta-description">
+                    Join thousands of successful applicants who have used our advanced AI platform 
+                    to prepare for defense research careers.
+                </p>
+                
+                <div class="cta-buttons">
+                    <button class="btn btn-primary btn-cta" id="startFreeTrial">
+                        <i class="fas fa-rocket"></i>
+                        <span>Start Free Trial</span>
+                    </button>
+                    <button class="btn btn-outline btn-cta" id="scheduleDemo">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Schedule Demo</span>
+                    </button>
+                </div>
+
+                <div class="cta-features">
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>No credit card required</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>14-day free trial</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Cancel anytime</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-main">
+                <div class="footer-brand">
+                    <div class="footer-logo">
+                        <i class="fas fa-shield-alt"></i>
+                        <div>
+                            <h3>DRDO<span class="ai-highlight">AI</span>SELECT</h3>
+                            <p>Advanced Defense Simulation</p>
+                        </div>
+                    </div>
+                    <p class="footer-description">
+                        Official AI-powered simulation platform for DRDO selection preparation.
+                        Trusted by defense research organizations.
+                    </p>
+                </div>
+
+                <div class="footer-links">
+                    <div class="link-group">
+                        <h4>Platform</h4>
+                        <a href="#modules">Modules</a>
+                        <a href="#features">Features</a>
+                        <a href="#analytics">Analytics</a>
+                        <a href="#contact">Contact</a>
+                    </div>
+                    
+                    <div class="link-group">
+                        <h4>Resources</h4>
+                        <a href="#">Documentation</a>
+                        <a href="#">Research Papers</a>
+                        <a href="#">Help Center</a>
+                        <a href="#">Blog</a>
+                    </div>
+                    
+                    <div class="link-group">
+                        <h4>Legal</h4>
+                        <a href="#">Privacy Policy</a>
+                        <a href="#">Terms of Service</a>
+                        <a href="#">Security</a>
+                        <a href="#">Compliance</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <div class="copyright">
+                    <p>&copy; 2023 DRDO AI Selection Platform. All rights reserved.</p>
+                    <p>Official Simulation Partner for Defense Research & Development Organisation</p>
+                </div>
+                
+                <div class="footer-social">
+                    <a href="#" class="social-link">
+                        <i class="fab fa-linkedin"></i>
+                    </a>
+                    <a href="#" class="social-link">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="#" class="social-link">
+                        <i class="fab fa-youtube"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Login Modal -->
+    <div class="modal-overlay" id="loginModal">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3><i class="fas fa-user-circle"></i> User Login</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="fullName" placeholder="Enter your full name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Email *</label>
+                    <input type="email" id="email" required placeholder="Enter your email">
+                </div>
+                
+                <div class="form-group">
+                    <label>Password *</label>
+                    <input type="password" id="password" required placeholder="Enter password">
+                </div>
+                
+                <div class="form-group">
+                    <label>Phone Number</label>
+                    <input type="tel" id="phone" placeholder="Enter phone number">
+                </div>
+                
+                <button type="submit" class="btn btn-gradient">
+                    <i class="fas fa-sign-in-alt"></i>
+                    <span>Login & Store Details</span>
+                </button>
+            </form>
+            
+            <div id="loginMessage"></div>
+        </div>
+    </div>
+
+    <!-- YouTube Video Modal -->
+    <div class="modal-overlay" id="videoModal">
+        <div class="modal-container" style="max-width: 800px;">
+            <div class="modal-header">
+                <h3><i class="fas fa-video"></i> DRDO Selection Demo</h3>
+                <button class="modal-close" onclick="closeVideoModal()">&times;</button>
+            </div>
+            
+            <div class="video-container">
+                <!-- Leave src blank. We'll set it on open. -->
+                <iframe
+                    id="demoVideoIframe"
+                    data-id="0-9_HCsgESI"
+                    width="100%"
+                    height="450"
+                    frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
+                    allowfullscreen
+                    title="DRDO Demo Video"
+                    src="about:blank">
+                </iframe>
+                <div class="video-info">
+                    <h4>DRDO Online Domain Based Test & Virtual Interview Demo</h4>
+                    <p>Watch this comprehensive demo of our AI-powered DRDO selection platform, featuring domain-based tests and virtual interview simulations used by defense research aspirants.</p>
+                </div>
+            </div>
+
+            <!-- Provide a small fallback hint for users if embedding is blocked -->
+            <div id="videoFallbackHint" style="display:none; padding:8px; text-align:center; color:#111;">
+                <small>Can't play the video inline. <a id="videoWatchLink" href="#" target="_blank" rel="noopener">Open on YouTube</a></small>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    (function () {
+        const iframeId = 'demoVideoIframe';
+        const iframe = document.getElementById(iframeId);
+        const videoId = iframe.getAttribute('data-id');
+        const ytWatch = `https://www.youtube.com/watch?v=${videoId}`;
+        const ytEmbedBase = `https://www.youtube.com/embed/${videoId}`;
+
+        // Show modal and start playback (muted autoplay enabled)
+        function openVideoModal() {
+            const modal = document.getElementById('videoModal');
+            modal.style.display = 'block';
+            document.getElementById('videoFallbackHint').style.display = 'none';
+
+            try {
+                // Set the embed src with autoplay and mute
+                const src = ytEmbedBase + '?rel=0&autoplay=1&mute=1&playsinline=1&enablejsapi=1';
+                iframe.src = src;
+                console.info('Set iframe src to embed:', src);
+
+                // Try to ensure playback via postMessage (works with enablejsapi)
+                const tryPlayViaPostMessage = function () {
+                    try {
+                        iframe.contentWindow.postMessage(JSON.stringify({ event: 'command', func: 'playVideo', args: [] }), '*');
+                        console.info('Requested play via postMessage');
+                    } catch (err) {
+                        console.warn('postMessage play failed:', err);
+                    }
+                };
+
+                // Attempt immediate play after small delay (enough for src to load on most networks)
+                setTimeout(tryPlayViaPostMessage, 300);
+                // Extra attempt after 1s to increase reliability
+                setTimeout(tryPlayViaPostMessage, 1000);
+
+                // If after timeout not playing, fallback to open on YouTube in new tab
+                setTimeout(function () {
+                    try {
+                        // Check if the iframe has loaded playback state via YT API (best-effort)
+                        // If the video is blocked (embedding disabled), the player won't play; open watch link instead
+                        // Because cross-origin prevents checking play state reliably in some cases, we fallback using heuristics
+                        // If iframe remains about:blank or same origin: open fallback watch link.
+                        if (!iframe.src || iframe.src.indexOf('youtube.com/embed') === -1) {
+                            console.warn('Embedding failed; opening watch page as fallback');
+                            window.open(ytWatch, '_blank');
+                        } else {
+                            // show a hint if the video is not playing (can't reliably detect); but keep inline attempt
+                            document.getElementById('videoFallbackHint').style.display = 'block';
+                            document.getElementById('videoWatchLink').setAttribute('href', ytWatch);
+                        }
+                    } catch (err) {
+                        console.warn('Playback check/fallback: error', err);
+                        window.open(ytWatch, '_blank');
+                    }
+                }, 2500);
+            } catch (err) {
+                console.error('openVideoModal error:', err);
+                window.open(ytWatch, '_blank');
+            }
+        }
+
+        function closeVideoModal() {
+            const modal = document.getElementById('videoModal');
+            modal.style.display = 'none';
+            // Stop the iframe and free resources
+            try {
+                iframe.src = 'about:blank';
+            } catch (err) { console.warn('closeVideoModal iframe reset failed', err); }
+            document.getElementById('videoFallbackHint').style.display = 'none';
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const demoBtn = document.getElementById('demoBtn');
+            const watchBtn = document.getElementById('watchVideo');
+            if (demoBtn) demoBtn.addEventListener('click', function (e) { e.preventDefault(); openVideoModal(); });
+            if (watchBtn) watchBtn.addEventListener('click', function (e) { e.preventDefault(); openVideoModal(); });
+            const modalCloseBtns = document.querySelectorAll('.modal-close');
+            modalCloseBtns.forEach(btn => btn.addEventListener('click', closeVideoModal));
+            const modalOverlay = document.getElementById('videoModal');
+            if (modalOverlay) {
+                modalOverlay.addEventListener('click', function(e) {
+                    if (e.target === modalOverlay) closeVideoModal();
+                });
+            }
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') closeVideoModal();
+            });
+        });
+
+        window.openVideoModal = openVideoModal;
+        window.closeVideoModal = closeVideoModal;
+    })();
+    </script>
+
+    <!-- JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
